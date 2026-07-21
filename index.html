@@ -8,6 +8,63 @@
 <style>
 * { box-sizing: border-box; }
 
+
+/* ---------- 견적 ---------- */
+.quote-box {
+    background: #fbf6ef;
+    border: 1px solid #e8d9c5;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+}
+
+.quote-empty { opacity: 0.6; text-align: center; padding: 6px 0; }
+
+.quote-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.quote-badge.single { background: #e6f0e2; color: #3f6b34; }
+.quote-badge.multi { background: #f6e2d8; color: #9a4a24; }
+
+.quote-note { line-height: 1.6; margin-bottom: 12px; opacity: 0.85; }
+.quote-note b { color: #9a4a24; }
+
+.quote-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed #e6d8c6;
+}
+
+.quote-line .q-label { opacity: 0.85; }
+.quote-line .q-price { font-variant-numeric: tabular-nums; }
+
+.quote-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1.5px solid #d9c6ae;
+}
+
+.quote-total .t-label { font-size: 13px; }
+.quote-total .t-price { font-size: 19px; font-weight: bold; color: #754820; }
+
+.quote-sub {
+    margin-top: 8px;
+    font-size: 11px;
+    opacity: 0.6;
+    line-height: 1.6;
+}
+
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -17,7 +74,7 @@ body {
 
 .app { display: flex; height: 100vh; }
 
-/* 왼쪽 패널 */
+/* ---------- 왼쪽 패널 ---------- */
 .sidebar {
     width: 330px;
     background: #fff;
@@ -33,8 +90,8 @@ body {
     margin-bottom: 30px;
 }
 
-.section { margin-bottom: 28px; }
-.section h3 { margin-bottom: 14px; }
+.section { margin-bottom: 26px; }
+.section h3 { margin: 0 0 14px; font-size: 16px; }
 
 label {
     display: block;
@@ -64,23 +121,91 @@ button {
     font-size: 14px;
     background: #754820;
     color: white;
+    font-family: inherit;
 }
 
 button.secondary { background: #eee7df; color: #684326; }
-button.active { background: #d99046; }
+button.active { background: #d99046; color: white; }
 
 .btn-row { display: flex; gap: 8px; }
 .btn-row button { flex: 1; }
 
-.info {
-    background: #f8f3ec;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 13px;
-    line-height: 1.7;
+/* ---------- 러그 기성 사이즈 카드 ---------- */
+.preset-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
 
-/* 선택 항목 편집 패널 */
+.preset-card {
+    background: #fbf6ef;
+    border: 1px solid #e6d8c6;
+    border-radius: 10px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.preset-card:hover {
+    background: #f3e6d5;
+    border-color: #d0b494;
+}
+
+.preset-card .shape {
+    background: rgba(204, 157, 102, 0.4);
+    border: 1.5px solid #bd8042;
+    margin: 0 auto 7px;
+}
+
+.preset-card .p-name {
+    font-size: 12px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.preset-card .p-size {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+/* ---------- 가구 2차 선택지 ---------- */
+.furni-group { margin-bottom: 8px; }
+
+.furni-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #eee7df;
+    color: #684326;
+}
+
+.furni-toggle .caret { font-size: 11px; }
+
+.furni-options {
+    display: none;
+    gap: 6px;
+    padding: 4px 0 10px;
+}
+
+.furni-group.open .furni-options { display: flex; }
+
+.furni-options button {
+    flex: 1;
+    padding: 9px 4px;
+    margin: 0;
+    background: #fbf6ef;
+    border: 1px solid #e6d8c6;
+    color: #5d3b21;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.furni-options button:hover { background: #f3e6d5; }
+.furni-options button span { display: block; font-size: 10px; opacity: 0.7; }
+
+/* ---------- 선택 항목 편집 ---------- */
 #editPanel {
     background: #fbf6ef;
     border: 1px solid #e8d9c5;
@@ -90,13 +215,17 @@ button.active { background: #d99046; }
 
 #editPanel.hidden { display: none; }
 
-#editTitle {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 12px;
+#editTitle { font-size: 14px; font-weight: bold; margin-bottom: 12px; }
+
+.info {
+    background: #f8f3ec;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
-/* 메인 */
+/* ---------- 메인 ---------- */
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
 .toolbar {
@@ -111,37 +240,24 @@ button.active { background: #d99046; }
 
 .toolbar button { width: auto; margin: 0; padding: 9px 15px; }
 
-.workspace { flex: 1; overflow: auto; padding: 60px 40px 40px; }
+.workspace { flex: 1; overflow: auto; padding: 40px; }
 
-/* 방 */
+/* ---------- 방 (배치 캔버스) ---------- */
 .room {
+    /* position: relative;
+     background: url("images/room.png") center/cover no-repeat;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1); */
+
     position: relative;
-    background-color: #f5efe7;
-    border: 3px solid #bda890;
+    background: url(images/room.png) center / cover no-repeat;
+    background-color: white;
+    border: 1px solid #f7f4ef;
     margin: 0 auto;
     box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1);
 }
 
-.dimension-top {
-    position: absolute;
-    top: -32px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.dimension-left {
-    position: absolute;
-    left: -55px;
-    top: 50%;
-    transform: rotate(-90deg) translateX(50%);
-    transform-origin: left center;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-/* 배치 객체 공통 */
+/* ---------- 배치 객체 공통 ---------- */
 .object {
     position: absolute;
     cursor: grab;
@@ -155,12 +271,13 @@ button.active { background: #d99046; }
 }
 
 .object:active { cursor: grabbing; }
-.object.selected { outline: 3px dashed #d99046; outline-offset: 2px; }
+.object.selected { outline: 2px dashed #d0b494; outline-offset: 2px; }
 
 .obj-name {
     font-size: 13px;
     font-weight: bold;
     pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);   /* ← 추가 */
 }
 
 .size-label {
@@ -168,36 +285,52 @@ button.active { background: #d99046; }
     opacity: 0.85;
     pointer-events: none;
     white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);   /* ← 추가 */
 }
-
-/* 러그 위쪽 치수 라벨 (러그 바깥에 표시) */
 .rug-size-label {
     position: absolute;
     top: -22px;
     left: 50%;
     transform: translateX(-50%);
     color: #71431f;
+    text-shadow: none;   /* ← 추가 */
 }
 
-/* 배율이 너무 작아지면 객체 안 글씨는 숨긴다.
-   (선택하면 우측 하단 정보 패널에서 치수 확인 가능) */
 .room.compact .obj-name,
 .room.compact .size-label:not(.rug-size-label),
-.room.compact .piece-size {
-    display: none;
-}
+.room.compact .piece-size { display: none; }
 
 /* 가구 종류 */
-.sofa { background: #8d7563; border-radius: 18px; color: white; z-index: 2; }
-.tv { background: #222; border-radius: 5px; color: white; z-index: 2; }
-.table { background: #b89975; border-radius: 50%; color: white; z-index: 2; }
+.sofa {
+    background: url("images/sofa.png") center/100% 100% no-repeat;
+    border-radius: 18px;
+    color: white;
+    z-index: 2;
+}
 
-/* 러그 */
+.tv {
+    background: url("images/tv.png") center/100% 100% no-repeat;
+    border-radius: 5px;
+    color: white;
+    z-index: 2;
+}
+
+.table {
+    background: url("images/table.png") center/100% 100% no-repeat;
+    border-radius: 50%;
+    color: white;
+    z-index: 2;
+}
+
+/* 러그 — 이미지 위에 반투명 색을 덮어 분할선이 잘 보이게 */
 .rug {
-    background: rgba(204, 157, 102, 0.35);
-    border: 3px solid #bd8042;
+    background: linear-gradient(rgba(204,157,102,0.15), rgba(204,157,102,0.15)),
+                url("images/lug.png") center/100% 100% no-repeat;
+    /* border: 3px solid #bd8042; */
     z-index: 1;
 }
+
+.rug.round { border-radius: 50%; }
 
 .rug-piece {
     position: absolute;
@@ -208,7 +341,8 @@ button.active { background: #d99046; }
     justify-content: center;
     font-size: 11px;
     color: #71431f;
-    background: rgba(230, 190, 140, 0.3);
+    /* background: rgba(230, 190, 140, 0.3); */
+    background: transparent;
     pointer-events: none;
     overflow: hidden;
     text-align: center;
@@ -217,7 +351,7 @@ button.active { background: #d99046; }
 
 .rug-piece .piece-size { font-size: 10px; opacity: 0.8; }
 
-/* 선택 정보 */
+/* ---------- 선택 정보 ---------- */
 .selection-info {
     position: fixed;
     bottom: 20px;
@@ -235,15 +369,10 @@ button.active { background: #d99046; }
    ========================================================== */
 @media (max-width: 767px) {
 
-    .app {
-        flex-direction: column;
-        height: 100dvh;   /* 모바일 브라우저 주소창 변화 대응 */
-    }
+    .app { flex-direction: column; height: 100dvh; }
 
-    /* 캔버스가 위로 */
     .main { order: 1; min-height: 0; }
 
-    /* 컨트롤이 아래로 — 자체 스크롤되는 시트 */
     .sidebar {
         order: 2;
         width: 100%;
@@ -266,25 +395,13 @@ button.active { background: #d99046; }
     input { padding: 10px; margin-bottom: 8px; }
     button { padding: 11px; margin-bottom: 6px; }
 
-    /* 가구 추가·분할 방식 버튼은 한 줄 배치 */
-    .furni-buttons,
-    .division-buttons {
-        display: flex;
-        gap: 8px;
-    }
+    .preset-grid { grid-template-columns: repeat(3, 1fr); }
 
-    .furni-buttons button,
-    .division-buttons button {
-        flex: 1;
-        padding: 11px 4px;
-        font-size: 13px;
-    }
+    .division-buttons { display: flex; gap: 8px; }
+    .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
     .toolbar { height: 52px; padding: 0 12px; }
-    .workspace { padding: 32px 14px 14px; }
-
-    .dimension-top { top: -22px; font-size: 11px; }
-    .dimension-left { left: -28px; font-size: 11px; }
+    .workspace { padding: 20px 14px 14px; }
 }
 </style>
 </head>
@@ -297,30 +414,49 @@ button.active { background: #d99046; }
 
         <div class="logo">reliv,</div>
 
+        <!-- ===== 러그 추가 (기성 사이즈) ===== -->
         <div class="section">
-            <h3>공간 크기</h3>
-            <div class="input-row">
-                <div>
-                    <label>가로 (cm)</label>
-                    <input id="roomWidth" type="number" value="500">
-                </div>
-                <div>
-                    <label>세로 (cm)</label>
-                    <input id="roomHeight" type="number" value="500">
-                </div>
-            </div>
-            <button onclick="applyRoom()">공간 적용</button>
+            <h3>러그 추가</h3>
+            <div class="preset-grid" id="rugPresets"></div>
         </div>
 
+        <!-- ===== 가구 추가 (2차 선택지) ===== -->
         <div class="section">
             <h3>가구 추가</h3>
-            <div class="furni-buttons">
-                <button class="secondary" onclick="addFurniture('sofa')">+ 소파</button>
-                <button class="secondary" onclick="addFurniture('tv')">+ TV</button>
-                <button class="secondary" onclick="addFurniture('table')">+ 테이블</button>
+
+            <div class="furni-group" id="group-sofa">
+                <button class="furni-toggle" onclick="toggleGroup('sofa')">
+                    <span>+ 소파</span><span class="caret">▾</span>
+                </button>
+                <div class="furni-options">
+                    <button onclick="addFurniture('sofa', 150, 85, '1인용')">1인용<span>150×85</span></button>
+                    <button onclick="addFurniture('sofa', 200, 90, '2인용')">2인용<span>200×90</span></button>
+                    <button onclick="addFurniture('sofa', 260, 95, '3인용')">3인용<span>260×95</span></button>
+                </div>
+            </div>
+
+            <div class="furni-group" id="group-tv">
+                <button class="furni-toggle" onclick="toggleGroup('tv')">
+                    <span>+ TV</span><span class="caret">▾</span>
+                </button>
+                <div class="furni-options">
+                    <button onclick="addFurniture('tv', 130, 40, '중형')">중형<span>130×40</span></button>
+                    <button onclick="addFurniture('tv', 190, 45, '대형')">대형<span>190×45</span></button>
+                </div>
+            </div>
+
+            <div class="furni-group" id="group-table">
+                <button class="furni-toggle" onclick="toggleGroup('table')">
+                    <span>+ 테이블</span><span class="caret">▾</span>
+                </button>
+                <div class="furni-options">
+                    <button onclick="addFurniture('table', 50, 50, '소형')">소형<span>50×50</span></button>
+                    <button onclick="addFurniture('table', 100, 100, '대형')">대형<span>100×100</span></button>
+                </div>
             </div>
         </div>
 
+        <!-- ===== 선택 항목 편집 ===== -->
         <div class="section">
             <h3>선택 항목 편집</h3>
             <div id="editPanel" class="hidden">
@@ -344,11 +480,12 @@ button.active { background: #d99046; }
                 </div>
             </div>
             <div id="editEmpty" class="info">
-                방 안의 러그나 가구를 클릭하면<br>
+                배치된 러그나 가구를 클릭하면<br>
                 크기와 회전을 편집할 수 있습니다.
             </div>
         </div>
 
+        <!-- ===== 분할 방식 ===== -->
         <div class="section">
             <h3>분할 방식</h3>
             <div class="division-buttons">
@@ -358,13 +495,13 @@ button.active { background: #d99046; }
             </div>
         </div>
 
-        <div class="info usage-guide">
-            <strong>사용 방법</strong><br>
-            1. 공간 크기를 입력하세요.<br>
-            2. 소파, TV, 테이블을 추가하세요.<br>
-            3. 원하는 위치로 드래그하세요.<br>
-            4. 객체를 클릭하면 크기·회전을 편집할 수 있습니다.<br>
-            5. 분할 방식을 선택해보세요.
+
+       <!-- ===== 견적 계산 ===== -->
+        <div class="section">
+            <h3>제작 견적</h3>
+            <div id="quoteBox" class="quote-box">
+                <div class="quote-empty">러그를 선택하면 견적이 계산됩니다.</div>
+            </div>
         </div>
 
     </aside>
@@ -376,13 +513,11 @@ button.active { background: #d99046; }
             <span id="zoomText">100%</span>
             <button onclick="zoomIn()">+</button>
             <button onclick="deleteSelected()">선택 삭제</button>
+            <button class="secondary" onclick="clearAll()">전체 지우기</button>
         </div>
 
         <div class="workspace">
-            <div class="room" id="room">
-                <div class="dimension-top" id="topDimension">500cm</div>
-                <div class="dimension-left" id="leftDimension">500cm</div>
-            </div>
+            <div class="room" id="room"></div>
         </div>
 
     </main>
@@ -397,31 +532,76 @@ button.active { background: #d99046; }
 /* ==========================================================
    모든 객체(러그·가구)의 크기와 위치는 cm 단위로
    element.dataset 에 저장하고, 화면에 그릴 때만 px로 변환한다.
-   화면 배율은 "공간이 항상 화면에 다 들어오는 배율(baseScale)"을
-   자동 계산하고, 사용자 줌(zoomFactor)을 그 위에 곱한다.
+   배치 캔버스는 고정 크기(CANVAS_W × CANVAS_H cm)이며,
+   화면 배율은 항상 캔버스 전체가 보이도록 자동 계산한다.
    ========================================================== */
 
-let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배율
-let zoomFactor = 1;       // 사용자가 +/− 로 조절하는 배수 (1 = 100%)
-let scale = 1;            // 실제 px/cm = baseScale × zoomFactor
+const CANVAS_W = 600;     // 배치 캔버스 가로 (cm)
+const CANVAS_H = 450;     // 배치 캔버스 세로 (cm)
 
-let roomWidth = 500;
-let roomHeight = 500;
+let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배율
+let zoomFactor = 1;       // 사용자가 +/− 로 조절하는 배수
+let scale = 1;            // 실제 px/cm
 
 let selectedObject = null;
 let divisionMode = "optimal";
-let furnitureCount = 0;
+let objectCount = 0;
 
 const room = document.getElementById("room");
 
-const TYPE_NAMES = {
-    rug: "러그",
-    sofa: "소파",
-    tv: "TV",
-    table: "테이블"
-};
+const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블" };
+
+/* ---------- 러그 기성 사이즈 7종 ---------- */
+const RUG_PRESETS = [
+    { name: "미니",     w: 60,  h: 90,  shape: "rect" },
+    { name: "복도형",   w: 80,  h: 200, shape: "rect" },
+    { name: "소형",     w: 120, h: 170, shape: "rect" },
+    { name: "중형",     w: 160, h: 230, shape: "rect" },
+    { name: "대형",     w: 200, h: 290, shape: "rect" },
+    { name: "정사각",   w: 200, h: 200, shape: "rect" }
+];
 
 function cmToPx(cm) { return cm * scale; }
+
+
+/* ---------- 러그 프리셋 카드 생성 ---------- */
+
+function buildRugPresets() {
+
+    const grid = document.getElementById("rugPresets");
+
+    RUG_PRESETS.forEach((preset, i) => {
+
+        const card = document.createElement("div");
+        card.className = "preset-card";
+        card.onclick = function () { addRug(i); };
+
+        /* 카드 안 미리보기 도형 — 실제 비율을 유지해 최대 34px */
+        const ratio = preset.w / preset.h;
+        let pw, ph;
+        if (ratio >= 1) { pw = 34; ph = 34 / ratio; }
+        else { ph = 34; pw = 34 * ratio; }
+
+        const shape = document.createElement("div");
+        shape.className = "shape";
+        shape.style.width = pw + "px";
+        shape.style.height = ph + "px";
+        if (preset.shape === "round") shape.style.borderRadius = "50%";
+
+        const nameEl = document.createElement("span");
+        nameEl.className = "p-name";
+        nameEl.innerText = preset.name;
+
+        const sizeEl = document.createElement("span");
+        sizeEl.className = "p-size";
+        sizeEl.innerText = preset.w + "×" + preset.h;
+
+        card.appendChild(shape);
+        card.appendChild(nameEl);
+        card.appendChild(sizeEl);
+        grid.appendChild(card);
+    });
+}
 
 
 /* ---------- 객체 생성 ---------- */
@@ -437,14 +617,18 @@ function createObject(type, name, w, h, x, y) {
     el.dataset.y = y;
     el.dataset.rot = 0;
 
-    const nameEl = document.createElement("span");
-    nameEl.className = "obj-name";
-    nameEl.innerText = name;
+    objectCount++;
+    el.id = "obj-" + objectCount;
+
+    if (name) {
+        const nameEl = document.createElement("span");
+        nameEl.className = "obj-name";
+        nameEl.innerText = name;
+        el.appendChild(nameEl);
+    }
 
     const sizeEl = document.createElement("span");
     sizeEl.className = "size-label";
-
-    el.appendChild(nameEl);
     el.appendChild(sizeEl);
 
     room.appendChild(el);
@@ -452,6 +636,70 @@ function createObject(type, name, w, h, x, y) {
     renderObject(el);
 
     return el;
+}
+
+
+/* ---------- 러그 추가 (여러 개 생성 가능) ---------- */
+
+function addRug(presetIndex) {
+
+    const p = RUG_PRESETS[presetIndex];
+
+    /* 새 러그가 서로 겹치지 않게 조금씩 어긋나게 배치 */
+    const rugCount = room.querySelectorAll(".rug").length;
+    const offset = (rugCount % 5) * 30;
+
+    let x = (CANVAS_W - p.w) / 2 + offset;
+    let y = (CANVAS_H - p.h) / 2 + offset;
+
+    x = Math.max(0, Math.min(x, CANVAS_W - p.w));
+    y = Math.max(0, Math.min(y, CANVAS_H - p.h));
+
+    const el = createObject("rug", "", p.w, p.h, x, y);
+    // el.dataset.shape = p.shape;
+    el.dataset.division = divisionMode;
+    if (p.shape === "round") el.classList.add("round");
+
+    el.querySelector(".size-label").classList.add("rug-size-label");
+
+    renderObject(el);
+    selectObject(el);
+
+    updateQuote();
+}
+
+
+/* ---------- 가구 추가 ---------- */
+
+function addFurniture(type, w, h, label) {
+
+    const startX = { sofa: 40, tv: 200, table: 380 }[type];
+    const startY = { sofa: 300, tv: 30, table: 180 }[type];
+
+    const count = room.querySelectorAll("." + type).length;
+    const offset = (count % 5) * 25;
+
+    let x = Math.max(0, Math.min(startX + offset, CANVAS_W - w));
+    let y = Math.max(0, Math.min(startY + offset, CANVAS_H - h));
+
+   const name = label || TYPE_NAMES[type];
+    const el = createObject(type, name, w, h, x, y);
+
+    selectObject(el);
+}
+
+
+/* ---------- 가구 그룹 펼치기/접기 ---------- */
+
+function toggleGroup(type) {
+
+    const group = document.getElementById("group-" + type);
+    const wasOpen = group.classList.contains("open");
+
+    document.querySelectorAll(".furni-group")
+        .forEach(g => g.classList.remove("open"));
+
+    if (!wasOpen) group.classList.add("open");
 }
 
 
@@ -469,9 +717,10 @@ function renderObject(el) {
     el.style.top = cmToPx(Number(el.dataset.y)) + "px";
     el.style.transform = "rotate(" + rot + "deg)";
 
-    /* 치수 표시 — 글자는 객체와 함께 회전한다 */
     const sizeEl = el.querySelector(".size-label");
-    if (sizeEl) sizeEl.innerText = w + " × " + h + " cm";
+    // if (sizeEl) sizeEl.innerText = w + " × " + h + " cm";
+    // 변경 후
+    if (sizeEl) sizeEl.innerText = w + " × " + h;
 
     if (el.dataset.type === "rug") renderRugPieces(el);
 }
@@ -489,14 +738,13 @@ function clampPosition(el, x, y) {
     const h = Number(el.dataset.h);
     const rad = Number(el.dataset.rot) * Math.PI / 180;
 
-    /* 회전된 사각형이 실제로 차지하는 영역(AABB) */
     const aabbW = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
     const aabbH = Math.abs(w * Math.sin(rad)) + Math.abs(h * Math.cos(rad));
 
     const minX = (aabbW - w) / 2;
-    const maxX = roomWidth - aabbW / 2 - w / 2;
+    const maxX = CANVAS_W - aabbW / 2 - w / 2;
     const minY = (aabbH - h) / 2;
-    const maxY = roomHeight - aabbH / 2 - h / 2;
+    const maxY = CANVAS_H - aabbH / 2 - h / 2;
 
     return {
         x: Math.max(minX, Math.min(x, Math.max(minX, maxX))),
@@ -557,14 +805,29 @@ function selectObject(el) {
         TYPE_NAMES[el.dataset.type] + " 편집";
     document.getElementById("editWidth").value = el.dataset.w;
     document.getElementById("editHeight").value = el.dataset.h;
-    document.getElementById("editRotation").value = el.dataset.rot;
+    // document.getElementById("editRotation").value = el.dataset.rot;
+       /* 러그를 선택하면 그 러그의 분할 방식으로 버튼 갱신 */
+    if (el.dataset.type === "rug") {
+        divisionMode = el.dataset.division || divisionMode;
+        syncDivisionButtons(divisionMode);
+    }
 
-    /* 모바일: 선택하면 아래 시트에서 편집 패널이 보이게 스크롤 */
     if (window.innerWidth < 768) {
         document.getElementById("editPanel")
             .scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
+    updateSelectionInfo();
+}
+
+function clearSelection() {
+
+    selectedObject = null;
+    document.querySelectorAll(".object")
+        .forEach(o => o.classList.remove("selected"));
+
+    document.getElementById("editPanel").classList.add("hidden");
+    document.getElementById("editEmpty").style.display = "block";
     updateSelectionInfo();
 }
 
@@ -580,8 +843,7 @@ function updateSelectionInfo() {
     const el = selectedObject;
     info.innerHTML =
         "<strong>" + TYPE_NAMES[el.dataset.type] + "</strong> 선택됨<br>" +
-        el.dataset.w + " × " + el.dataset.h + " cm / " +
-        el.dataset.rot + "°";
+        el.dataset.w + " × " + el.dataset.h + " cm / " + el.dataset.rot + "°";
 }
 
 function applyEdit() {
@@ -592,11 +854,10 @@ function applyEdit() {
     const h = Number(document.getElementById("editHeight").value);
     const rot = Number(document.getElementById("editRotation").value);
 
-    if (w > 0) selectedObject.dataset.w = w;
-    if (h > 0) selectedObject.dataset.h = h;
+    if (w > 0) selectedObject.dataset.w = Math.min(w, CANVAS_W);
+    if (h > 0) selectedObject.dataset.h = Math.min(h, CANVAS_H);
     selectedObject.dataset.rot = ((rot % 360) + 360) % 360;
 
-    /* 크기·회전 변경 후 방 밖으로 나가지 않도록 위치 보정 */
     const pos = clampPosition(
         selectedObject,
         Number(selectedObject.dataset.x),
@@ -607,7 +868,20 @@ function applyEdit() {
 
     renderObject(selectedObject);
     selectObject(selectedObject);
+
+    updateQuote();
 }
+
+/* 편집 입력칸에서 Enter를 누르면 바로 적용 */
+["editWidth", "editHeight", "editRotation"].forEach(id => {
+    document.getElementById(id).addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            applyEdit();
+            this.blur();   /* 모바일에서 키보드 닫기 */
+        }
+    });
+});
 
 function rotateSelected(deg) {
 
@@ -630,26 +904,22 @@ function rotateSelected(deg) {
 }
 
 
-/* ---------- 공간 / 화면 배율 ---------- */
+/* ---------- 화면 배율 (자동 맞춤) ---------- */
 
-/* 공간 전체가 항상 화면 안에 들어오는 배율을 계산 */
 function fitToWorkspace() {
 
     const workspace = document.querySelector(".workspace");
     const isMobile = window.innerWidth < 768;
 
-    /* 모바일은 여백을 좁게 잡아 캔버스를 최대한 활용 */
-    const padW = isMobile ? 64 : 80;
-    const padH = isMobile ? 56 : 110;
+    const padW = isMobile ? 50 : 80;
+    const padH = isMobile ? 50 : 90;
 
     const availW = Math.max(workspace.clientWidth - padW, 150);
     const availH = Math.max(workspace.clientHeight - padH, 150);
 
-    /* 가로·세로 중 더 빡빡한 쪽에 맞춘다 */
-    baseScale = Math.min(availW / roomWidth, availH / roomHeight);
+    baseScale = Math.min(availW / CANVAS_W, availH / CANVAS_H);
 }
 
-/* 배율·방 크기·모든 객체를 한 번에 다시 그림 */
 function refreshView() {
 
     scale = baseScale * zoomFactor;
@@ -657,69 +927,31 @@ function refreshView() {
     document.getElementById("zoomText").innerText =
         Math.round(zoomFactor * 100) + "%";
 
-    room.style.width = cmToPx(roomWidth) + "px";
-    room.style.height = cmToPx(roomHeight) + "px";
+    room.style.width = cmToPx(CANVAS_W) + "px";
+    room.style.height = cmToPx(CANVAS_H) + "px";
 
-    /* 배율이 너무 작으면 객체 안 글씨 숨김 */
     room.classList.toggle("compact", scale < 0.5);
 
     renderAll();
 }
 
-function applyRoom() {
-
-    roomWidth = Number(document.getElementById("roomWidth").value);
-    roomHeight = Number(document.getElementById("roomHeight").value);
-
-    document.getElementById("topDimension").innerText = roomWidth + "cm";
-    document.getElementById("leftDimension").innerText = roomHeight + "cm";
-
-    /* 방이 작아졌을 때 객체 위치 보정 */
-    document.querySelectorAll(".object").forEach(el => {
-        const pos = clampPosition(el, Number(el.dataset.x), Number(el.dataset.y));
-        el.dataset.x = pos.x;
-        el.dataset.y = pos.y;
-    });
-
-    fitToWorkspace();
-    refreshView();
-}
-
-/* 브라우저(또는 iframe) 크기가 바뀌면 다시 맞춤 */
 window.addEventListener("resize", function () {
     fitToWorkspace();
     refreshView();
 });
 
 
-/* ---------- 가구 추가 ---------- */
-
-function addFurniture(type) {
-
-    furnitureCount++;
-
-    const presets = {
-        sofa:  { name: "SOFA",  w: 250, h: 90,  x: 100, y: 350 },
-        tv:    { name: "TV",    w: 200, h: 40,  x: 150, y: 30 },
-        table: { name: "TABLE", w: 100, h: 100, x: 200, y: 200 }
-    };
-
-    const p = presets[type];
-    const el = createObject(type, p.name, p.w, p.h, p.x, p.y);
-    el.id = "object-" + furnitureCount;
-    selectObject(el);
-}
-
-
 /* ---------- 러그 분할 ---------- */
 
+// 변경 전
 function setDivision(mode) {
 
     divisionMode = mode;
 
     ["equalBtn", "optimalBtn", "maxBtn"].forEach(id => {
-        document.getElementById(id).classList.remove("active");
-        document.getElementById(id).classList.add("secondary");
+        const b = document.getElementById(id);
+        b.classList.remove("active");
+        b.classList.add("secondary");
     });
 
     const activeId =
@@ -729,78 +961,113 @@ function setDivision(mode) {
     document.getElementById(activeId).classList.add("active");
     document.getElementById(activeId).classList.remove("secondary");
 
-    renderRugPieces(document.getElementById("rug"));
+    /* 배치된 모든 러그에 적용 */
+    room.querySelectorAll(".rug").forEach(renderRugPieces);
+    updateQuote();
+}
+
+// 변경 후
+function setDivision(mode) {
+
+    divisionMode = mode;   /* 다음에 추가할 러그의 기본값 */
+
+    syncDivisionButtons(mode);
+
+    /* 선택된 러그에만 적용 */
+    if (selectedObject && selectedObject.dataset.type === "rug") {
+        selectedObject.dataset.division = mode;
+        renderRugPieces(selectedObject);
+    }
+
+    updateQuote();
+}
+
+/* 버튼 활성 표시만 갱신 */
+function syncDivisionButtons(mode) {
+
+    ["equalBtn", "optimalBtn", "maxBtn"].forEach(id => {
+        const b = document.getElementById(id);
+        b.classList.remove("active");
+        b.classList.add("secondary");
+    });
+
+    const activeId =
+        mode === "equal" ? "equalBtn" :
+        mode === "optimal" ? "optimalBtn" : "maxBtn";
+
+    document.getElementById(activeId).classList.add("active");
+    document.getElementById(activeId).classList.remove("secondary");
 }
 
 function renderRugPieces(rug) {
 
     rug.querySelectorAll(".rug-piece").forEach(p => p.remove());
 
+    /* 원형 러그는 분할 표시를 생략 */
+    if (rug.dataset.shape === "round") return;
+
     const rugW = Number(rug.dataset.w);
     const rugH = Number(rug.dataset.h);
 
-    let pieces = [];
+    /* 최대 제작 사이즈 안이면 분할선 없음 — 1장으로 제작 */
+    if (rugW <= ROLL_WIDTH && rugH <= MAX_LENGTH) return;
 
-    if (divisionMode === "equal") {
-        pieces = [
-            {x:0, y:0, w:50, h:50}, {x:50, y:0, w:50, h:50},
-            {x:0, y:50, w:50, h:50}, {x:50, y:50, w:50, h:50}
-        ];
-    }
+    const mode = rug.dataset.division || divisionMode;
 
-    if (divisionMode === "optimal") {
-        pieces = [
-            {x:0, y:0, w:60, h:60}, {x:60, y:0, w:40, h:60},
-            {x:0, y:60, w:60, h:40}, {x:60, y:60, w:40, h:40}
-        ];
-    }
+    /* 견적과 동일한 로직으로 실제 분할 구성을 가져온다 */
+    const layout = splitLayout(mode, rugW, rugH);
 
-    if (divisionMode === "max") {
-        pieces = [
-            {x:0, y:0, w:40, h:80}, {x:40, y:0, w:20, h:80},
-            {x:60, y:0, w:40, h:80}, {x:0, y:80, w:40, h:20},
-            {x:40, y:80, w:20, h:20}, {x:60, y:80, w:40, h:20}
-        ];
-    }
+    let index = 0;
+    let offsetY = 0;
 
-    pieces.forEach((piece, index) => {
+    layout.rows.forEach(rowH => {
 
-        const div = document.createElement("div");
-        div.className = "rug-piece";
+        let offsetX = 0;
 
-        const pieceW = Math.round(piece.w / 100 * rugW);
-        const pieceH = Math.round(piece.h / 100 * rugH);
+        layout.cols.forEach(colW => {
 
-        div.innerHTML =
-            (index + 1) +
-            "<span class='piece-size'>" + pieceW + "×" + pieceH + "</span>";
+            index++;
 
-        div.style.left = piece.x + "%";
-        div.style.top = piece.y + "%";
-        div.style.width = piece.w + "%";
-        div.style.height = piece.h + "%";
+            const div = document.createElement("div");
+            div.className = "rug-piece";
+            div.innerHTML = index +
+                "<span class='piece-size'>" + colW + "×" + rowH + "</span>";
 
-        rug.appendChild(div);
+            /* 실제 cm 비율 그대로 배치 */
+            div.style.left = (offsetX / rugW * 100) + "%";
+            div.style.top = (offsetY / rugH * 100) + "%";
+            div.style.width = (colW / rugW * 100) + "%";
+            div.style.height = (rowH / rugH * 100) + "%";
+
+            rug.appendChild(div);
+
+            offsetX += colW;
+        });
+
+        offsetY += rowH;
     });
 }
 
 
 /* ---------- 삭제 ---------- */
-
+// 변경 후
 function deleteSelected() {
 
-    if (selectedObject && selectedObject.id !== "rug") {
-        selectedObject.remove();
-        selectedObject = null;
+    if (!selectedObject) return;
 
-        document.getElementById("editPanel").classList.add("hidden");
-        document.getElementById("editEmpty").style.display = "block";
-        updateSelectionInfo();
-    }
+    selectedObject.remove();
+    clearSelection();
+    updateQuote();
 }
 
+function clearAll() {
 
-/* ---------- 줌 (자동 맞춤 배율 위에 곱해지는 배수) ---------- */
+    room.querySelectorAll(".object").forEach(o => o.remove());
+    clearSelection();
+    updateQuote();
+}
+
+/* ---------- 줌 ---------- */
 
 function zoomIn() {
     zoomFactor = Math.min(3, Math.round((zoomFactor + 0.2) * 10) / 10);
@@ -813,16 +1080,155 @@ function zoomOut() {
 }
 
 
+/* ==========================================================
+   제작 견적 계산
+   - 최대 단일 제작 사이즈: 200 × 400 cm
+   - 폭은 200cm 롤 기준으로 청구 (100cm 판도 200cm로 계산)
+   - 세 가지 분할 방식의 합계 금액은 항상 동일
+   ========================================================== */
+
+const ROLL_WIDTH = 200;    // 롤 폭 (cm)
+const MAX_LENGTH = 400;    // 최대 제작 길이 (cm)
+const UNIT_PRICE = 45500;  // 원/㎡
+const BASE_LENGTH = 300;   // 최적 분할 기준판 길이 (cm)
+
+/* 판 1장 금액 — 폭은 롤 폭 기준으로 청구 */
+function panelPrice(lengthCm) {
+    return Math.round((ROLL_WIDTH / 100) * (lengthCm / 100) * UNIT_PRICE);
+}
+
+/* 분할 방식별 열(가로) · 행(세로) 구성 */
+function splitLayout(mode, W, H) {
+
+    /* 가로는 롤 폭 기준으로 채우고 나머지 */
+    function fillCols() {
+        const cols = [];
+        let rest = W;
+        while (rest > ROLL_WIDTH) { cols.push(ROLL_WIDTH); rest -= ROLL_WIDTH; }
+        if (rest > 0) cols.push(rest);
+        return cols;
+    }
+
+    if (mode === "equal") {
+        const nC = Math.ceil(W / ROLL_WIDTH);
+        const nR = Math.ceil(H / MAX_LENGTH);
+        const cols = [], rows = [];
+
+        const baseW = Math.floor(W / nC), remW = W - baseW * nC;
+        for (let i = 0; i < nC; i++) cols.push(baseW + (i < remW ? 1 : 0));
+
+        const baseH = Math.floor(H / nR), remH = H - baseH * nR;
+        for (let i = 0; i < nR; i++) rows.push(baseH + (i < remH ? 1 : 0));
+
+        return { cols: cols, rows: rows };
+    }
+
+    const rows = [];
+    let rest = H;
+    const step = (mode === "max") ? MAX_LENGTH : BASE_LENGTH;
+
+    while (rest > MAX_LENGTH) { rows.push(step); rest -= step; }
+    if (rest > 0) rows.push(rest);
+
+    return { cols: fillCols(), rows: rows };
+}
+
+function formatWon(n) {
+    return n.toLocaleString("ko-KR") + "원";
+}
+
+/* 견적 계산 및 표시 */
+function updateQuote() {
+
+    const box = document.getElementById("quoteBox");
+    const rugs = room.querySelectorAll(".rug");
+
+    if (rugs.length === 0) {
+        box.innerHTML = '<div class="quote-empty">러그를 선택하면 견적이 계산됩니다.</div>';
+        return;
+    }
+
+    let html = "";
+    let grandTotal = 0;
+    let grandPanels = 0;
+
+    rugs.forEach((rug, idx) => {
+
+        const W = Number(rug.dataset.w);
+        const H = Number(rug.dataset.h);
+
+        // const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
+        // const layout = splitLayout(divisionMode, W, H);
+        const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
+        const rugMode = rug.dataset.division || divisionMode;
+        const layout = splitLayout(rugMode, W, H);
+
+
+        /* 같은 규격끼리 묶어서 집계 */
+        const groups = {};
+        let subtotal = 0, panelCount = 0;
+
+        layout.cols.forEach(cw => {
+            layout.rows.forEach(rh => {
+                const key = cw + "×" + rh;
+                const price = panelPrice(rh);
+                if (!groups[key]) groups[key] = { count: 0, price: price };
+                groups[key].count++;
+                subtotal += price;
+                panelCount++;
+            });
+        });
+
+        grandTotal += subtotal;
+        grandPanels += panelCount;
+
+        /* 러그가 여러 개일 때만 번호 표시 */
+        if (rugs.length > 1) {
+            html += '<div style="font-weight:bold;margin:' +
+                    (idx === 0 ? '0' : '14px') + ' 0 8px;">러그 ' +
+                    (idx + 1) + ' — ' + W + '×' + H + '</div>';
+        }
+
+        if (fitsOne) {
+            html += '<span class="quote-badge single">● 1장으로 제작 가능</span>';
+            html += '<div class="quote-note">' + W + '×' + H + 'cm는 최대 제작 사이즈(' +
+                    ROLL_WIDTH + '×' + MAX_LENGTH + 'cm) 안이라 이음선 없이 한 장으로 나와요.</div>';
+        } else {
+            html += '<span class="quote-badge multi">● 분할 제작 필요</span>';
+            html += '<div class="quote-note"><b>' + W + '×' + H +
+                    'cm</b>는 최대 제작 사이즈를 초과해 <b>' + panelCount +
+                    '장</b>으로 나뉘어요. (배치 ' + layout.cols.length +
+                    '×' + layout.rows.length + ')</div>';
+        }
+
+        Object.keys(groups).forEach(key => {
+            const g = groups[key];
+            html += '<div class="quote-line">' +
+                    '<span class="q-label">' + key + 'cm × ' + g.count + '장</span>' +
+                    '<span class="q-price">' + formatWon(g.price * g.count) + '</span>' +
+                    '</div>';
+        });
+    });
+
+    html += '<div class="quote-total">' +
+            '<span class="t-label">예상 견적 · 총 ' + grandPanels + '장</span>' +
+            '<span class="t-price">' + formatWon(grandTotal) + '</span>' +
+            '</div>';
+
+    html += '<div class="quote-sub">최대 단일 제작 사이즈는 ' + ROLL_WIDTH + '×' +
+            MAX_LENGTH + 'cm예요. 어떤 분할 방식을 골라도 합계 금액은 같습니다.</div>';
+
+    box.innerHTML = html;
+}
+
 /* ---------- 초기화 ---------- */
 
-const rug = createObject("rug", "", 200, 200, 150, 150);
-rug.id = "rug";
-rug.querySelector(".obj-name").remove();
-rug.querySelector(".size-label").classList.add("rug-size-label");
+buildRugPresets();
+fitToWorkspace();
+refreshView();
 
-applyRoom();
-selectObject(rug);
-setDivision("optimal");
+/* 기본으로 중형 러그 하나를 올려둔다 */
+addRug(3);
 
 </script>
 
