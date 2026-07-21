@@ -9,6 +9,27 @@
 * { box-sizing: border-box; }
 
 
+.custom-rug-box {
+    background: #fbf6ef;
+    border: 1px solid #e8d9c5;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.custom-rug-box input { margin-bottom: 10px; }
+.custom-rug-box button { margin-bottom: 0; }
+
+.custom-hint {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+    display: none;
+}
+
+.custom-hint.show { display: block; }
+.custom-hint.single { color: #3f6b34; }
+.custom-hint.multi { color: #9a4a24; }
+
 /* ---------- 견적 ---------- */
 .quote-box {
     background: #fbf6ef;
@@ -173,15 +194,21 @@ button.active { background: #d99046; color: white; }
 /* ---------- 가구 2차 선택지 ---------- */
 .furni-group { margin-bottom: 8px; }
 
-.furni-toggle {
+.furni-label {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 13px;
+    border-radius: 8px;
+    margin-bottom: 8px;
     background: #eee7df;
     color: #684326;
+    font-size: 14px;
 }
 
-.furni-toggle .caret { font-size: 11px; }
+.furni-label .caret {
+    font-size: 11px;
+}
 
 .furni-options {
     display: none;
@@ -414,47 +441,43 @@ button.active { background: #d99046; color: white; }
     <aside class="sidebar">
 
         <div class="logo">reliv,</div>
+           <div class="section">
+            <h3>가구</h3>
 
+         <div class="furni-group open" id="group-sofa">
+            <div class="furni-label">소파 <span class="caret">▾</span></div>
+            <div class="furni-options">
+                <button onclick="addFurniture('sofa', 160, 90, '2인용')">2인용<span>160×90</span></button>
+                <button onclick="addFurniture('sofa', 210, 90, '3인용')">3인용<span>210×90</span></button>
+                <button onclick="addFurniture('sofa', 260, 95, '4인용')">4인용<span>260×95</span></button>
+            </div>
+        </div>
         <!-- ===== 러그 추가 (기성 사이즈) ===== -->
         <div class="section">
-            <h3>러그 추가</h3>
+            <h3>러그</h3>
             <div class="preset-grid" id="rugPresets"></div>
         </div>
 
-        <!-- ===== 가구 추가 (2차 선택지) ===== -->
+        <!-- ===== 맞춤 제작 러그 ===== -->
         <div class="section">
-            <h3>가구 추가</h3>
-
-            <div class="furni-group" id="group-sofa">
-                <button class="furni-toggle" onclick="toggleGroup('sofa')">
-                    <span>+ 소파</span><span class="caret">▾</span>
-                </button>
-               <div class="furni-options">
-                    <button onclick="addFurniture('sofa', 160, 90, '2인용')">2인용<span>160×90</span></button>
-                    <button onclick="addFurniture('sofa', 210, 90, '3인용')">3인용<span>210×90</span></button>
-                    <button onclick="addFurniture('sofa', 260, 95, '4인용')">4인용<span>260×95</span></button>
+            <h3>맞춤 제작 러그</h3>
+            <div class="custom-rug-box">
+                <div class="input-row">
+                    <div>
+                        <label>가로 (cm)</label>
+                        <input id="customWidth" type="number" value="300" min="10">
+                    </div>
+                    <div>
+                        <label>세로 (cm)</label>
+                        <input id="customHeight" type="number" value="400" min="10">
+                    </div>
                 </div>
+                <button onclick="addCustomRug()">맞춤 러그 생성</button>
+                <div class="custom-hint" id="customHint"></div>
             </div>
+        </div>
 
-            <!-- <div class="furni-group" id="group-tv">
-                <button class="furni-toggle" onclick="toggleGroup('tv')">
-                    <span>+ TV</span><span class="caret">▾</span>
-                </button>
-                <div class="furni-options">
-                    <button onclick="addFurniture('tv', 130, 40, '중형')">중형<span>130×40</span></button>
-                    <button onclick="addFurniture('tv', 190, 45, '대형')">대형<span>190×45</span></button>
-                </div>
-            </div>
-
-            <div class="furni-group" id="group-table">
-                <button class="furni-toggle" onclick="toggleGroup('table')">
-                    <span>+ 테이블</span><span class="caret">▾</span>
-                </button>
-                <div class="furni-options">
-                    <button onclick="addFurniture('table', 50, 50, '소형')">소형<span>50×50</span></button>
-                    <button onclick="addFurniture('table', 100, 100, '중형')">중형<span>100×100</span></button>
-                </div>
-            </div> -->
+   
         </div>
 
         <!-- ===== 선택 항목 편집 ===== -->
@@ -670,7 +693,59 @@ function addRug(presetIndex) {
     updateQuote();
 }
 
+/* ---------- 맞춤 제작 러그 ---------- */
 
+function addCustomRug() {
+
+    const w = Number(document.getElementById("customWidth").value);
+    const h = Number(document.getElementById("customHeight").value);
+    const hint = document.getElementById("customHint");
+
+    if (!(w > 0) || !(h > 0)) {
+        hint.className = "custom-hint show multi";
+        hint.innerText = "가로와 세로를 입력해주세요.";
+        return;
+    }
+
+    /* 캔버스 정중앙에 생성 */
+    const x = (CANVAS_W - w) / 2;
+    const y = (CANVAS_H - h) / 2;
+
+    const el = createObject("rug", "", w, h, x, y);
+    el.dataset.shape = "rect";
+    el.dataset.division = divisionMode;
+    el.querySelector(".size-label").classList.add("rug-size-label");
+
+    /* 캔버스를 벗어나면 위치 보정 */
+    const pos = clampPosition(el, x, y);
+    el.dataset.x = pos.x;
+    el.dataset.y = pos.y;
+
+    renderObject(el);
+    selectObject(el);
+    updateQuote();
+
+    /* 제작 방식 안내 */
+    if (w <= ROLL_WIDTH && h <= MAX_LENGTH) {
+        hint.className = "custom-hint show single";
+        hint.innerText = "● 1장으로 제작 가능한 사이즈입니다.";
+    } else {
+        hint.className = "custom-hint show multi";
+        hint.innerText = "● 최대 제작 사이즈(" + ROLL_WIDTH + "×" + MAX_LENGTH +
+                         "cm)를 초과해 분할 제작됩니다.";
+    }
+}
+
+/* 맞춤 입력칸에서 Enter로 바로 생성 */
+["customWidth", "customHeight"].forEach(id => {
+    document.getElementById(id).addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            addCustomRug();
+            this.blur();
+        }
+    });
+});
 /* ---------- 가구 추가 ---------- */
 
 
