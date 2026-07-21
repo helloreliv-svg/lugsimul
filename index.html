@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reliv Rug Planner</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f7f4ef;
+    color: #5d3b21;
+}
+
+.app { display: flex; height: 100vh; }
+
+/* 왼쪽 패널 */
+.sidebar {
+    width: 330px;
+    background: #fff;
+    padding: 24px;
+    border-right: 1px solid #e8e0d6;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.logo {
+    font-family: Georgia, serif;
+    font-size: 34px;
+    margin-bottom: 30px;
+}
+
+.section { margin-bottom: 28px; }
+.section h3 { margin-bottom: 14px; }
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd2c6;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.input-row { display: flex; gap: 10px; }
+.input-row > div { flex: 1; }
+
+button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #754820;
+    color: white;
+}
+
+button.secondary { background: #eee7df; color: #684326; }
+button.active { background: #d99046; }
+
+.btn-row { display: flex; gap: 8px; }
+.btn-row button { flex: 1; }
+
+.info {
+    background: #f8f3ec;
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* 선택 항목 편집 패널 */
+#editPanel {
+    background: #fbf6ef;
+    border: 1px solid #e8d9c5;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+#editPanel.hidden { display: none; }
+
+#editTitle {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* 메인 */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.toolbar {
+    height: 64px;
+    background: white;
+    border-bottom: 1px solid #e8e0d6;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 10px;
+}
+
+.toolbar button { width: auto; margin: 0; padding: 9px 15px; }
+
+.workspace { flex: 1; overflow: auto; padding: 60px 40px 40px; }
+
+/* 방 */
+.room {
+    position: relative;
+    background-color: #f5efe7;
+    border: 3px solid #bda890;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1);
+}
+
+.dimension-top {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.dimension-left {
+    position: absolute;
+    left: -55px;
+    top: 50%;
+    transform: rotate(-90deg) translateX(50%);
+    transform-origin: left center;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* 배치 객체 공통 */
+.object {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    touch-action: none;
+}
+
+.object:active { cursor: grabbing; }
+.object.selected { outline: 3px dashed #d99046; outline-offset: 2px; }
+
+.obj-name {
+    font-size: 13px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.size-label {
+    font-size: 11px;
+    opacity: 0.85;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* 러그 위쪽 치수 라벨 (러그 바깥에 표시) */
+.rug-size-label {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #71431f;
+}
+
+/* 배율이 너무 작아지면 객체 안 글씨는 숨긴다.
+   (선택하면 우측 하단 정보 패널에서 치수 확인 가능) */
+.room.compact .obj-name,
+.room.compact .size-label:not(.rug-size-label),
+.room.compact .piece-size {
+    display: none;
+}
+
+/* 가구 종류 */
+.sofa { background: #8d7563; border-radius: 18px; color: white; z-index: 2; }
+.tv { background: #222; border-radius: 5px; color: white; z-index: 2; }
+.table { background: #b89975; border-radius: 50%; color: white; z-index: 2; }
+
+/* 러그 */
+.rug {
+    background: rgba(204, 157, 102, 0.35);
+    border: 3px solid #bd8042;
+    z-index: 1;
+}
+
+.rug-piece {
+    position: absolute;
+    border: 1px dashed rgba(100, 60, 20, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #71431f;
+    background: rgba(230, 190, 140, 0.3);
+    pointer-events: none;
+    overflow: hidden;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.rug-piece .piece-size { font-size: 10px; opacity: 0.8; }
+
+/* 선택 정보 */
+.selection-info {
+    position: fixed;
+    bottom: 20px;
+    right: 25px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ==========================================================
+   모바일 (767px 이하): 위에 캔버스, 아래에 컨트롤 시트
+   ========================================================== */
+@media (max-width: 767px) {
+
+    .app {
+        flex-direction: column;
+        height: 100dvh;   /* 모바일 브라우저 주소창 변화 대응 */
+    }
+
+    /* 캔버스가 위로 */
+    .main { order: 1; min-height: 0; }
+
+    /* 컨트롤이 아래로 — 자체 스크롤되는 시트 */
+    .sidebar {
+        order: 2;
+        width: 100%;
+        height: 46%;
+        min-height: 250px;
+        border-right: none;
+        border-top: 1px solid #e8e0d6;
+        border-radius: 18px 18px 0 0;
+        padding: 16px 16px 28px;
+        box-shadow: 0 -6px 20px rgba(80, 50, 20, 0.08);
+    }
+
+    .logo { display: none; }
+    .usage-guide { display: none; }
+    .selection-info { display: none; }
+
+    .section { margin-bottom: 18px; }
+    .section h3 { margin: 0 0 10px; font-size: 15px; }
+
+    input { padding: 10px; margin-bottom: 8px; }
+    button { padding: 11px; margin-bottom: 6px; }
+
+    /* 가구 추가·분할 방식 버튼은 한 줄 배치 */
+    .furni-buttons,
+    .division-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .furni-buttons button,
+    .division-buttons button {
+        flex: 1;
+        padding: 11px 4px;
+        font-size: 13px;
+    }
+
+    .toolbar { height: 52px; padding: 0 12px; }
+    .workspace { padding: 32px 14px 14px; }
+
+    .dimension-top { top: -22px; font-size: 11px; }
+    .dimension-left { left: -28px; font-size: 11px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="logo">reliv,</div>
+
+        <div class="section">
+            <h3>공간 크기</h3>
+            <div class="input-row">
+                <div>
+                    <label>가로 (cm)</label>
+                    <input id="roomWidth" type="number" value="500">
+                </div>
+                <div>
+                    <label>세로 (cm)</label>
+                    <input id="roomHeight" type="number" value="500">
+                </div>
+            </div>
+            <button onclick="applyRoom()">공간 적용</button>
+        </div>
+
+        <div class="section">
+            <h3>가구 추가</h3>
+            <div class="furni-buttons">
+                <button class="secondary" onclick="addFurniture('sofa')">+ 소파</button>
+                <button class="secondary" onclick="addFurniture('tv')">+ TV</button>
+                <button class="secondary" onclick="addFurniture('table')">+ 테이블</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>선택 항목 편집</h3>
+            <div id="editPanel" class="hidden">
+                <div id="editTitle">-</div>
+                <div class="input-row">
+                    <div>
+                        <label>가로 (cm)</label>
+                        <input id="editWidth" type="number">
+                    </div>
+                    <div>
+                        <label>세로 (cm)</label>
+                        <input id="editHeight" type="number">
+                    </div>
+                </div>
+                <label>회전 (도)</label>
+                <input id="editRotation" type="number" step="5" value="0">
+                <button onclick="applyEdit()">크기·회전 적용</button>
+                <div class="btn-row">
+                    <button class="secondary" onclick="rotateSelected(-90)">↺ 90°</button>
+                    <button class="secondary" onclick="rotateSelected(90)">↻ 90°</button>
+                </div>
+            </div>
+            <div id="editEmpty" class="info">
+                방 안의 러그나 가구를 클릭하면<br>
+                크기와 회전을 편집할 수 있습니다.
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>분할 방식</h3>
+            <div class="division-buttons">
+                <button id="equalBtn" class="secondary" onclick="setDivision('equal')">등분 분할</button>
+                <button id="optimalBtn" class="active" onclick="setDivision('optimal')">최적 분할</button>
+                <button id="maxBtn" class="secondary" onclick="setDivision('max')">최대 크기</button>
+            </div>
+        </div>
+
+        <div class="info usage-guide">
+            <strong>사용 방법</strong><br>
+            1. 공간 크기를 입력하세요.<br>
+            2. 소파, TV, 테이블을 추가하세요.<br>
+            3. 원하는 위치로 드래그하세요.<br>
+            4. 객체를 클릭하면 크기·회전을 편집할 수 있습니다.<br>
+            5. 분할 방식을 선택해보세요.
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="toolbar">
+            <button onclick="zoomOut()">−</button>
+            <span id="zoomText">100%</span>
+            <button onclick="zoomIn()">+</button>
+            <button onclick="deleteSelected()">선택 삭제</button>
+        </div>
+
+        <div class="workspace">
+            <div class="room" id="room">
+                <div class="dimension-top" id="topDimension">500cm</div>
+                <div class="dimension-left" id="leftDimension">500cm</div>
+            </div>
+        </div>
+
+    </main>
+
+</div>
+
+<div class="selection-info" id="selectionInfo">선택된 항목 없음</div>
+
+
+<script>
+
+/* ==========================================================
+   모든 객체(러그·가구)의 크기와 위치는 cm 단위로
+   element.dataset 에 저장하고, 화면에 그릴 때만 px로 변환한다.
+   화면 배율은 "공간이 항상 화면에 다 들어오는 배율(baseScale)"을
+   자동 계산하고, 사용자 줌(zoomFactor)을 그 위에 곱한다.
+   ========================================================== */
+
+let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배율
+let zoomFactor = 1;       // 사용자가 +/− 로 조절하는 배수 (1 = 100%)
+let scale = 1;            // 실제 px/cm = baseScale × zoomFactor
+
+let roomWidth = 500;
+let roomHeight = 500;
+
+let selectedObject = null;
+let divisionMode = "optimal";
+let furnitureCount = 0;
+
+const room = document.getElementById("room");
+
+const TYPE_NAMES = {
+    rug: "러그",
+    sofa: "소파",
+    tv: "TV",
+    table: "테이블"
+};
+
+function cmToPx(cm) { return cm * scale; }
+
+
+/* ---------- 객체 생성 ---------- */
+
+function createObject(type, name, w, h, x, y) {
+
+    const el = document.createElement("div");
+    el.classList.add("object", type);
+    el.dataset.type = type;
+    el.dataset.w = w;
+    el.dataset.h = h;
+    el.dataset.x = x;
+    el.dataset.y = y;
+    el.dataset.rot = 0;
+
+    const nameEl = document.createElement("span");
+    nameEl.className = "obj-name";
+    nameEl.innerText = name;
+
+    const sizeEl = document.createElement("span");
+    sizeEl.className = "size-label";
+
+    el.appendChild(nameEl);
+    el.appendChild(sizeEl);
+
+    room.appendChild(el);
+    makeDraggable(el);
+    renderObject(el);
+
+    return el;
+}
+
+
+/* ---------- 객체 렌더링 (cm → px) ---------- */
+
+function renderObject(el) {
+
+    const w = Number(el.dataset.w);
+    const h = Number(el.dataset.h);
+    const rot = Number(el.dataset.rot);
+
+    el.style.width = cmToPx(w) + "px";
+    el.style.height = cmToPx(h) + "px";
+    el.style.left = cmToPx(Number(el.dataset.x)) + "px";
+    el.style.top = cmToPx(Number(el.dataset.y)) + "px";
+    el.style.transform = "rotate(" + rot + "deg)";
+
+    /* 치수 표시 — 글자는 객체와 함께 회전한다 */
+    const sizeEl = el.querySelector(".size-label");
+    if (sizeEl) sizeEl.innerText = w + " × " + h + " cm";
+
+    if (el.dataset.type === "rug") renderRugPieces(el);
+}
+
+function renderAll() {
+    document.querySelectorAll(".object").forEach(renderObject);
+}
+
+
+/* ---------- 회전을 고려한 이동 범위 제한 ---------- */
+
+function clampPosition(el, x, y) {
+
+    const w = Number(el.dataset.w);
+    const h = Number(el.dataset.h);
+    const rad = Number(el.dataset.rot) * Math.PI / 180;
+
+    /* 회전된 사각형이 실제로 차지하는 영역(AABB) */
+    const aabbW = Math.abs(w * Math.cos(rad)) + Math.abs(h * Math.sin(rad));
+    const aabbH = Math.abs(w * Math.sin(rad)) + Math.abs(h * Math.cos(rad));
+
+    const minX = (aabbW - w) / 2;
+    const maxX = roomWidth - aabbW / 2 - w / 2;
+    const minY = (aabbH - h) / 2;
+    const maxY = roomHeight - aabbH / 2 - h / 2;
+
+    return {
+        x: Math.max(minX, Math.min(x, Math.max(minX, maxX))),
+        y: Math.max(minY, Math.min(y, Math.max(minY, maxY)))
+    };
+}
+
+
+/* ---------- 드래그 ---------- */
+
+function makeDraggable(el) {
+
+    el.addEventListener("pointerdown", function (e) {
+
+        e.preventDefault();
+        selectObject(el);
+
+        const startMouseX = e.clientX;
+        const startMouseY = e.clientY;
+        const startX = Number(el.dataset.x);
+        const startY = Number(el.dataset.y);
+
+        function move(ev) {
+            const dxCm = (ev.clientX - startMouseX) / scale;
+            const dyCm = (ev.clientY - startMouseY) / scale;
+
+            const pos = clampPosition(el, startX + dxCm, startY + dyCm);
+            el.dataset.x = pos.x;
+            el.dataset.y = pos.y;
+            renderObject(el);
+        }
+
+        function stop() {
+            document.removeEventListener("pointermove", move);
+            document.removeEventListener("pointerup", stop);
+        }
+
+        document.addEventListener("pointermove", move);
+        document.addEventListener("pointerup", stop);
+    });
+}
+
+
+/* ---------- 선택 / 편집 패널 ---------- */
+
+function selectObject(el) {
+
+    selectedObject = el;
+
+    document.querySelectorAll(".object")
+        .forEach(o => o.classList.remove("selected"));
+    el.classList.add("selected");
+
+    document.getElementById("editPanel").classList.remove("hidden");
+    document.getElementById("editEmpty").style.display = "none";
+
+    document.getElementById("editTitle").innerText =
+        TYPE_NAMES[el.dataset.type] + " 편집";
+    document.getElementById("editWidth").value = el.dataset.w;
+    document.getElementById("editHeight").value = el.dataset.h;
+    document.getElementById("editRotation").value = el.dataset.rot;
+
+    /* 모바일: 선택하면 아래 시트에서 편집 패널이 보이게 스크롤 */
+    if (window.innerWidth < 768) {
+        document.getElementById("editPanel")
+            .scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    updateSelectionInfo();
+}
+
+function updateSelectionInfo() {
+
+    const info = document.getElementById("selectionInfo");
+
+    if (!selectedObject) {
+        info.innerText = "선택된 항목 없음";
+        return;
+    }
+
+    const el = selectedObject;
+    info.innerHTML =
+        "<strong>" + TYPE_NAMES[el.dataset.type] + "</strong> 선택됨<br>" +
+        el.dataset.w + " × " + el.dataset.h + " cm / " +
+        el.dataset.rot + "°";
+}
+
+function applyEdit() {
+
+    if (!selectedObject) return;
+
+    const w = Number(document.getElementById("editWidth").value);
+    const h = Number(document.getElementById("editHeight").value);
+    const rot = Number(document.getElementById("editRotation").value);
+
+    if (w > 0) selectedObject.dataset.w = w;
+    if (h > 0) selectedObject.dataset.h = h;
+    selectedObject.dataset.rot = ((rot % 360) + 360) % 360;
+
+    /* 크기·회전 변경 후 방 밖으로 나가지 않도록 위치 보정 */
+    const pos = clampPosition(
+        selectedObject,
+        Number(selectedObject.dataset.x),
+        Number(selectedObject.dataset.y)
+    );
+    selectedObject.dataset.x = pos.x;
+    selectedObject.dataset.y = pos.y;
+
+    renderObject(selectedObject);
+    selectObject(selectedObject);
+}
+
+function rotateSelected(deg) {
+
+    if (!selectedObject) return;
+
+    const rot = (Number(selectedObject.dataset.rot) + deg + 360) % 360;
+    selectedObject.dataset.rot = rot;
+    document.getElementById("editRotation").value = rot;
+
+    const pos = clampPosition(
+        selectedObject,
+        Number(selectedObject.dataset.x),
+        Number(selectedObject.dataset.y)
+    );
+    selectedObject.dataset.x = pos.x;
+    selectedObject.dataset.y = pos.y;
+
+    renderObject(selectedObject);
+    updateSelectionInfo();
+}
+
+
+/* ---------- 공간 / 화면 배율 ---------- */
+
+/* 공간 전체가 항상 화면 안에 들어오는 배율을 계산 */
+function fitToWorkspace() {
+
+    const workspace = document.querySelector(".workspace");
+    const isMobile = window.innerWidth < 768;
+
+    /* 모바일은 여백을 좁게 잡아 캔버스를 최대한 활용 */
+    const padW = isMobile ? 64 : 80;
+    const padH = isMobile ? 56 : 110;
+
+    const availW = Math.max(workspace.clientWidth - padW, 150);
+    const availH = Math.max(workspace.clientHeight - padH, 150);
+
+    /* 가로·세로 중 더 빡빡한 쪽에 맞춘다 */
+    baseScale = Math.min(availW / roomWidth, availH / roomHeight);
+}
+
+/* 배율·방 크기·모든 객체를 한 번에 다시 그림 */
+function refreshView() {
+
+    scale = baseScale * zoomFactor;
+
+    document.getElementById("zoomText").innerText =
+        Math.round(zoomFactor * 100) + "%";
+
+    room.style.width = cmToPx(roomWidth) + "px";
+    room.style.height = cmToPx(roomHeight) + "px";
+
+    /* 배율이 너무 작으면 객체 안 글씨 숨김 */
+    room.classList.toggle("compact", scale < 0.5);
+
+    renderAll();
+}
+
+function applyRoom() {
+
+    roomWidth = Number(document.getElementById("roomWidth").value);
+    roomHeight = Number(document.getElementById("roomHeight").value);
+
+    document.getElementById("topDimension").innerText = roomWidth + "cm";
+    document.getElementById("leftDimension").innerText = roomHeight + "cm";
+
+    /* 방이 작아졌을 때 객체 위치 보정 */
+    document.querySelectorAll(".object").forEach(el => {
+        const pos = clampPosition(el, Number(el.dataset.x), Number(el.dataset.y));
+        el.dataset.x = pos.x;
+        el.dataset.y = pos.y;
+    });
+
+    fitToWorkspace();
+    refreshView();
+}
+
+/* 브라우저(또는 iframe) 크기가 바뀌면 다시 맞춤 */
+window.addEventListener("resize", function () {
+    fitToWorkspace();
+    refreshView();
+});
+
+
+/* ---------- 가구 추가 ---------- */
+
+function addFurniture(type) {
+
+    furnitureCount++;
+
+    const presets = {
+        sofa:  { name: "SOFA",  w: 250, h: 90,  x: 100, y: 350 },
+        tv:    { name: "TV",    w: 200, h: 40,  x: 150, y: 30 },
+        table: { name: "TABLE", w: 100, h: 100, x: 200, y: 200 }
+    };
+
+    const p = presets[type];
+    const el = createObject(type, p.name, p.w, p.h, p.x, p.y);
+    el.id = "object-" + furnitureCount;
+    selectObject(el);
+}
+
+
+/* ---------- 러그 분할 ---------- */
+
+function setDivision(mode) {
+
+    divisionMode = mode;
+
+    ["equalBtn", "optimalBtn", "maxBtn"].forEach(id => {
+        document.getElementById(id).classList.remove("active");
+        document.getElementById(id).classList.add("secondary");
+    });
+
+    const activeId =
+        mode === "equal" ? "equalBtn" :
+        mode === "optimal" ? "optimalBtn" : "maxBtn";
+
+    document.getElementById(activeId).classList.add("active");
+    document.getElementById(activeId).classList.remove("secondary");
+
+    renderRugPieces(document.getElementById("rug"));
+}
+
+function renderRugPieces(rug) {
+
+    rug.querySelectorAll(".rug-piece").forEach(p => p.remove());
+
+    const rugW = Number(rug.dataset.w);
+    const rugH = Number(rug.dataset.h);
+
+    let pieces = [];
+
+    if (divisionMode === "equal") {
+        pieces = [
+            {x:0, y:0, w:50, h:50}, {x:50, y:0, w:50, h:50},
+            {x:0, y:50, w:50, h:50}, {x:50, y:50, w:50, h:50}
+        ];
+    }
+
+    if (divisionMode === "optimal") {
+        pieces = [
+            {x:0, y:0, w:60, h:60}, {x:60, y:0, w:40, h:60},
+            {x:0, y:60, w:60, h:40}, {x:60, y:60, w:40, h:40}
+        ];
+    }
+
+    if (divisionMode === "max") {
+        pieces = [
+            {x:0, y:0, w:40, h:80}, {x:40, y:0, w:20, h:80},
+            {x:60, y:0, w:40, h:80}, {x:0, y:80, w:40, h:20},
+            {x:40, y:80, w:20, h:20}, {x:60, y:80, w:40, h:20}
+        ];
+    }
+
+    pieces.forEach((piece, index) => {
+
+        const div = document.createElement("div");
+        div.className = "rug-piece";
+
+        const pieceW = Math.round(piece.w / 100 * rugW);
+        const pieceH = Math.round(piece.h / 100 * rugH);
+
+        div.innerHTML =
+            (index + 1) +
+            "<span class='piece-size'>" + pieceW + "×" + pieceH + "</span>";
+
+        div.style.left = piece.x + "%";
+        div.style.top = piece.y + "%";
+        div.style.width = piece.w + "%";
+        div.style.height = piece.h + "%";
+
+        rug.appendChild(div);
+    });
+}
+
+
+/* ---------- 삭제 ---------- */
+
+function deleteSelected() {
+
+    if (selectedObject && selectedObject.id !== "rug") {
+        selectedObject.remove();
+        selectedObject = null;
+
+        document.getElementById("editPanel").classList.add("hidden");
+        document.getElementById("editEmpty").style.display = "block";
+        updateSelectionInfo();
+    }
+}
+
+
+/* ---------- 줌 (자동 맞춤 배율 위에 곱해지는 배수) ---------- */
+
+function zoomIn() {
+    zoomFactor = Math.min(3, Math.round((zoomFactor + 0.2) * 10) / 10);
+    refreshView();
+}
+
+function zoomOut() {
+    zoomFactor = Math.max(0.6, Math.round((zoomFactor - 0.2) * 10) / 10);
+    refreshView();
+}
+
+
+/* ---------- 초기화 ---------- */
+
+const rug = createObject("rug", "", 200, 200, 150, 150);
+rug.id = "rug";
+rug.querySelector(".obj-name").remove();
+rug.querySelector(".size-label").classList.add("rug-size-label");
+
+applyRoom();
+selectObject(rug);
+setDivision("optimal");
+
+</script>
+
+</body>
+</html>
