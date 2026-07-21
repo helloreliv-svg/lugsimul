@@ -250,11 +250,12 @@ button.active { background: #d99046; color: white; }
     box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1); */
 
     position: relative;
-    background: url(images/room.png) center / cover no-repeat;
-    background-color: white;
+ 
     border: 1px solid #f7f4ef;
     margin: 0 auto;
-    box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1);
+    /* background: url(images/room.png) center / cover no-repeat;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1); */
 }
 
 /* ---------- 배치 객체 공통 ---------- */
@@ -428,14 +429,14 @@ button.active { background: #d99046; color: white; }
                 <button class="furni-toggle" onclick="toggleGroup('sofa')">
                     <span>+ 소파</span><span class="caret">▾</span>
                 </button>
-                <div class="furni-options">
-                    <button onclick="addFurniture('sofa', 150, 85, '1인용')">1인용<span>150×85</span></button>
-                    <button onclick="addFurniture('sofa', 200, 90, '2인용')">2인용<span>200×90</span></button>
-                    <button onclick="addFurniture('sofa', 260, 95, '3인용')">3인용<span>260×95</span></button>
+               <div class="furni-options">
+                    <button onclick="addFurniture('sofa', 160, 90, '2인용')">2인용<span>160×90</span></button>
+                    <button onclick="addFurniture('sofa', 210, 90, '3인용')">3인용<span>210×90</span></button>
+                    <button onclick="addFurniture('sofa', 260, 95, '4인용')">4인용<span>260×95</span></button>
                 </div>
             </div>
 
-            <div class="furni-group" id="group-tv">
+            <!-- <div class="furni-group" id="group-tv">
                 <button class="furni-toggle" onclick="toggleGroup('tv')">
                     <span>+ TV</span><span class="caret">▾</span>
                 </button>
@@ -453,7 +454,7 @@ button.active { background: #d99046; color: white; }
                     <button onclick="addFurniture('table', 50, 50, '소형')">소형<span>50×50</span></button>
                     <button onclick="addFurniture('table', 100, 100, '중형')">중형<span>100×100</span></button>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- ===== 선택 항목 편집 ===== -->
@@ -553,12 +554,13 @@ const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블"
 
 /* ---------- 러그 기성 사이즈 7종 ---------- */
 const RUG_PRESETS = [
-    { name: "미니",     w: 60,  h: 90,  shape: "rect" },
-    { name: "복도형",   w: 80,  h: 200, shape: "rect" },
-    { name: "소형",     w: 120, h: 170, shape: "rect" },
-    { name: "중형",     w: 160, h: 230, shape: "rect" },
-    { name: "대형",     w: 200, h: 290, shape: "rect" },
-    { name: "정사각",   w: 200, h: 200, shape: "rect" }
+    { name: "거실XL",  w: 200, h: 300, shape: "rect" },
+    { name: "거실L",   w: 200, h: 250, shape: "rect" },
+    { name: "거실M",   w: 200, h: 150, shape: "rect" },
+    { name: "거실S",   w: 100, h: 150, shape: "rect" },
+    { name: "복도형",  w: 100, h: 250, shape: "rect" },
+    { name: "모듈형",  w: 100, h: 200, shape: "rect" },
+    { name: "주방용",  w: 45,  h: 115, shape: "rect" }
 ];
 
 function cmToPx(cm) { return cm * scale; }
@@ -671,18 +673,49 @@ function addRug(presetIndex) {
 
 /* ---------- 가구 추가 ---------- */
 
+
+// 변경 후
 function addFurniture(type, w, h, label) {
+
+    const name = label || TYPE_NAMES[type];
+
+    /* 같은 종류가 이미 있으면 그 자리에서 크기만 교체 */
+    const existing = room.querySelector("." + type);
+
+   if (existing) {
+
+        const oldW = Number(existing.dataset.w);
+        const oldH = Number(existing.dataset.h);
+
+        /* 중심을 유지한 채 크기 변경 */
+        existing.dataset.x = Number(existing.dataset.x) - (w - oldW) / 2;
+        existing.dataset.y = Number(existing.dataset.y) - (h - oldH) / 2;
+
+        existing.dataset.w = w;
+        existing.dataset.h = h;
+
+        const nameEl = existing.querySelector(".obj-name");
+        if (nameEl) nameEl.innerText = name;
+
+        const pos = clampPosition(
+            existing,
+            Number(existing.dataset.x),
+            Number(existing.dataset.y)
+        );
+        existing.dataset.x = pos.x;
+        existing.dataset.y = pos.y;
+
+        renderObject(existing);
+        selectObject(existing);
+        return;
+    }
 
     const startX = { sofa: 40, tv: 200, table: 380 }[type];
     const startY = { sofa: 300, tv: 30, table: 180 }[type];
 
-    const count = room.querySelectorAll("." + type).length;
-    const offset = (count % 5) * 25;
+    let x = Math.max(0, Math.min(startX, CANVAS_W - w));
+    let y = Math.max(0, Math.min(startY, CANVAS_H - h));
 
-    let x = Math.max(0, Math.min(startX + offset, CANVAS_W - w));
-    let y = Math.max(0, Math.min(startY + offset, CANVAS_H - h));
-
-   const name = label || TYPE_NAMES[type];
     const el = createObject(type, name, w, h, x, y);
 
     selectObject(el);
