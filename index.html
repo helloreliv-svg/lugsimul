@@ -399,7 +399,7 @@ button.active { background: #d99046; color: white; }
 
     .app { flex-direction: column; height: 100dvh; }
 
-    .main { order: 1; min-height: 0; }
+    .main { order: 1; min-height: 0; flex:none;}
 
     .sidebar {
         order: 2;
@@ -429,7 +429,11 @@ button.active { background: #d99046; color: white; }
     .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
     .toolbar { height: 52px; padding: 0 12px; }
-    .workspace { padding: 20px 14px 14px; }
+      .workspace {
+        padding: 26px 14px 14px;
+        aspect-ratio: 1 / 1;      /* ← 추가 */
+        flex: none;               /* ← 추가: flex:1 무력화 */
+    }
 }
 </style>
 </head>
@@ -928,10 +932,10 @@ function selectObject(el) {
         syncDivisionButtons(divisionMode);
     }
 
-    if (window.innerWidth < 768) {
-        document.getElementById("editPanel")
-            .scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
+    // if (window.innerWidth < 768) {
+    //     document.getElementById("editPanel")
+    //         .scrollIntoView({ behavior: "smooth", block: "nearest" });
+    // }
 
     updateSelectionInfo();
 }
