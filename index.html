@@ -194,16 +194,21 @@ button.active { background: #d99046; color: white; }
 /* ---------- 가구 2차 선택지 ---------- */
 .furni-group { margin-bottom: 8px; }
 
-.furni-label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.furni-select {
+    width: 100%;
     padding: 13px;
+    border: none;
     border-radius: 8px;
     margin-bottom: 8px;
     background: #eee7df;
     color: #684326;
     font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23684326'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
 }
 
 .furni-label .caret {
@@ -335,7 +340,12 @@ button.active { background: #d99046; color: white; }
     color: white;
     z-index: 2;
 }
-
+.bed {
+    background: url("images/bed.png") center/100% 100% no-repeat;
+    border-radius: 10px;
+    color: white;
+    z-index: 2;
+}
 .tv {
     background: url("images/tv.png") center/100% 100% no-repeat;
     border-radius: 5px;
@@ -448,14 +458,14 @@ button.active { background: #d99046; color: white; }
            <div class="section">
             <h3>가구</h3>
 
-         <div class="furni-group open" id="group-sofa">
-            <div class="furni-label">소파 <span class="caret">▾</span></div>
-            <div class="furni-options">
-                <button onclick="addFurniture('sofa', 160, 90, '2인용')">2인용<span>160×90</span></button>
-                <button onclick="addFurniture('sofa', 210, 90, '3인용')">3인용<span>210×90</span></button>
-                <button onclick="addFurniture('sofa', 260, 95, '4인용')">4인용<span>260×95</span></button>
-            </div>
+       <div class="furni-group open">
+            <select class="furni-select" id="furniType" onchange="changeFurniType()">
+                <option value="sofa">소파</option>
+                <option value="bed">침대</option>
+            </select>
+            <div class="furni-options" id="furniOptions"></div>
         </div>
+
         <!-- ===== 러그 추가 (기성 사이즈) ===== -->
         <div class="section">
             <h3>러그</h3>
@@ -577,7 +587,42 @@ let objectCount = 0;
 
 const room = document.getElementById("room");
 
-const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블" };
+const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블", bed: "침대" };
+
+/* 가구 종류별 선택지 */
+const FURNITURE_OPTIONS = {
+    sofa: [
+        { label: "2인용", w: 160, h: 90 },
+        { label: "3인용", w: 210, h: 90 },
+        { label: "4인용", w: 260, h: 95 }
+    ],
+    bed: [
+        { label: "싱글", w: 100, h: 200 },
+        { label: "퀸",   w: 150, h: 200 }
+    ]
+};
+
+/* 선택된 종류의 선택지 버튼을 그린다 */
+function changeFurniType() {
+
+    const type = document.getElementById("furniType").value;
+    const box = document.getElementById("furniOptions");
+
+    box.innerHTML = "";
+
+    FURNITURE_OPTIONS[type].forEach(opt => {
+
+        const btn = document.createElement("button");
+        btn.innerHTML = opt.label +
+            "<span>" + opt.w + "×" + opt.h + "</span>";
+        btn.onclick = function () {
+            addFurniture(type, opt.w, opt.h, opt.label);
+        };
+
+        box.appendChild(btn);
+    });
+}
+
 
 /* ---------- 러그 기성 사이즈 7종 ---------- */
 const RUG_PRESETS = [
@@ -789,8 +834,8 @@ function addFurniture(type, w, h, label) {
         return;
     }
 
-    const startX = { sofa: 40, tv: 200, table: 380 }[type];
-    const startY = { sofa: 300, tv: 30, table: 180 }[type];
+    const startX = { sofa: 40, tv: 200, table: 380, bed: 300 }[type];
+    const startY = { sofa: 300, tv: 30, table: 180, bed: 50 }[type];
 
     let x = Math.max(0, Math.min(startX, CANVAS_W - w));
     let y = Math.max(0, Math.min(startY, CANVAS_H - h));
@@ -1344,6 +1389,7 @@ function updateQuote() {
 /* ---------- 초기화 ---------- */
 
 buildRugPresets();
+changeFurniType();
 fitToWorkspace();
 refreshView();
 
