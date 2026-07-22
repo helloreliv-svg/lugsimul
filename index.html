@@ -1098,8 +1098,8 @@ function fitToWorkspace() {
     const workspace = document.querySelector(".workspace");
     const isMobile = window.innerWidth < 768;
 
-    const padW = isMobile ? 50 : 80;
-    const padH = isMobile ? 50 : 90;
+    const padW = isMobile ? 40 : 80;
+    const padH = isMobile ? 40 : 90;
 
     const availW = Math.max(workspace.clientWidth - padW, 150);
     const availH = Math.max(workspace.clientHeight - padH, 150);
@@ -1126,7 +1126,9 @@ window.addEventListener("resize", function () {
     fitToWorkspace();
     refreshView();
 });
-
+window.addEventListener("orientationchange", function () {
+    setTimeout(function () { fitToWorkspace(); refreshView(); }, 300);
+});
 
 /* ---------- 러그 분할 ---------- */
 
