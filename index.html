@@ -455,7 +455,10 @@ button.active { background: #d99046; color: white; }
     .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
     .toolbar { height: 52px; flex: 0 0 52px; padding: 0 12px; }
-
+    .obj-name { font-size: 11px; }
+    .size-label { font-size: 10px; }
+    .rug-piece { font-size: 10px; }
+    .rug-piece .piece-size { font-size: 9px; }
     .workspace {
         flex: 1 1 auto;
         min-height: 0;
@@ -1117,7 +1120,8 @@ function refreshView() {
     room.style.width = cmToPx(CANVAS_W) + "px";
     room.style.height = cmToPx(CANVAS_H) + "px";
 
-    room.classList.toggle("compact", scale < 0.5);
+    const compactThreshold = window.innerWidth < 768 ? 0.25 : 0.5;
+    room.classList.toggle("compact", scale < compactThreshold);
 
     renderAll();
 }
