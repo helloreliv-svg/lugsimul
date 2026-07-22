@@ -407,29 +407,37 @@ button.active { background: #d99046; color: white; }
    ========================================================== */
 @media (max-width: 767px) {
 
-    .app { flex-direction: column; height: 100dvh; }
+    html, body { height: 100%; overflow: hidden; }
 
-    .main { order: 1; min-height: 0; flex:none;}
+    .app {
+        flex-direction: column;
+        height: 100dvh;
+        overflow: hidden;
+    }
 
-   .app-root{
-    height:100dvh;
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-  }
-  .workspace{
-    flex:0 0 auto;
-    height:45dvh;
-    overflow:hidden;
-  }
-  .sidebar{
-    flex:1 1 auto;
-    min-height:0;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-  }
-  .sidebar::-webkit-scrollbar{width:0;display:none;}
-  .sidebar{scrollbar-width:none;}
+    .main {
+        order: 1;
+        flex: 0 0 54%;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        order: 2;
+        flex: 1 1 auto;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        border-right: none;
+        border-top: 1px solid #e8e0d6;
+        border-radius: 18px 18px 0 0;
+        padding: 16px 16px 28px;
+        box-shadow: 0 -6px 20px rgba(80, 50, 20, 0.08);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { width: 0; display: none; }
 
     .logo { display: none; }
     .usage-guide { display: none; }
@@ -446,8 +454,18 @@ button.active { background: #d99046; color: white; }
     .division-buttons { display: flex; gap: 8px; }
     .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
-    .toolbar { height: 52px; padding: 0 12px; }
-    
+    .toolbar { height: 52px; flex: 0 0 52px; padding: 0 12px; }
+
+    .workspace {
+        flex: 1 1 auto;
+        min-height: 0;
+        aspect-ratio: auto;
+        overflow: hidden;
+        padding: 20px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 </style>
 </head>
