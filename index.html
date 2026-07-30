@@ -103,7 +103,7 @@ body {
     margin: 0;
     font-family: var(--font);
     background: #f7f4ef;
-    color: #5d3b21;
+    color: #544E3B;
 }
 
 .app { display: flex; height: 100vh; }
@@ -472,7 +472,7 @@ button.active { background: #d99046; color: white; }
 /* ---------- 공통 레이아웃 ---------- */
 .page {
     min-height: 100vh;
-    padding: 60px 24px 80px;
+    padding: 40px 24px 80px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -533,6 +533,7 @@ button.active { background: #d99046; color: white; }
     text-align: center;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s;
+    
 }
 
 .choice-card:hover {
@@ -540,8 +541,8 @@ button.active { background: #d99046; color: white; }
     box-shadow: 0 8px 24px rgba(80, 50, 20, 0.1);
 }
 
-.choice-card.light { background: #f8f3ee; }
-.choice-card.dark { background: #e3ddce; }
+.choice-card.light { background: #F7F1ED; color:#714A32; }
+.choice-card.dark { background: #E4DFCF; color:#544E3B}
 
 .choice-card .c-sub {
     font-size: 13px;
@@ -627,13 +628,268 @@ button.active { background: #d99046; color: white; }
 
 .faq-item.open .faq-a { display: block; }
 
-.faq-a b { color: #5d3b21; }
+.faq-a b { 
+    /* color: #5d3b21; */
+    font-weight: bold;
+ }
 .faq-a .accent { color: #c0663a; font-weight: bold; }
 .faq-a ul { margin: 8px 0; padding-left: 20px; }
 .faq-a .block { margin-bottom: 18px; }
 
+/* ===== 홈 화면 데스크톱 레이아웃 (피그마 시안 기준) ===== */
+@media (min-width: 768px) {
+    #screenHome .page {
+        padding-top: 0;
+        padding-bottom: 6vh;
+    }
+    #screenHome .page-title {
+        font-size: 34px;
+        line-height: 1.3;
+        margin-top: 22vh;
+    }
+    #screenHome .choice-grid {
+        margin-top: 8vh;
+        gap: 24px;
+    }
+    #screenHome .choice-card {
+        width: 480px;
+        padding: 40px 40px;
+    }
+    #screenHome .choice-card .c-sub {
+        font-size: 15px;
+        margin-bottom: 14px;
+    }
+    #screenHome .choice-card .c-main {
+        font-size: 22px;
+    }
+    #screenHome .page-logo {
+        margin-top: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    #screenHome .page-logo img {
+        height: 44px;
+    }
+}
+
+/* ===== 예상 견적 결과 카드 (피그마 시안 기준) =====
+   기준 색: 본문 #544E3B / 보조 #6F6C56 / 강조 테두리 #714A32 */
+.result-head { text-align: center; margin-bottom: 38px; }
+
+.result-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #544E3B;
+    letter-spacing: -0.02em;
+}
+
+.result-sub {
+    font-size: 14px;
+    color: #6F6C56;
+    margin-top: 10px;
+    letter-spacing: -0.02em;
+}
+
+.result-grid {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.result-card {
+    position: relative;
+    width: 424px;   /* 안쪽 폭 365px — 설명문 1줄(364px)이 딱 들어가는 값 */
+    max-width: 100%;
+    background: #f6f1ea;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    padding: 34px 28px 30px;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+/* 선택된 카드만 강조 — 추천 배지는 위치 고정 */
+.result-card.selected {
+    background: #fbf7f1;
+    border-color: #714A32;
+}
+
+.rc-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #714A32;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 16px;
+    border-radius: 0 0px 0 8px;
+    letter-spacing: -0.02em;
+}
+
+.rc-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #544E3B;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+}
+
+.rc-desc {
+    font-size: 14px;
+    color: #6F6C56;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+/* 러그 도식 — 실제 러그 텍스처 위에 분할선만 점선으로 */
+.rug-diagram {
+    position: relative;
+    margin: 0 auto 30px;
+    background: url("images/lug.png") center/100% 100% no-repeat;
+}
+
+.diagram-piece {
+    position: absolute;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 11px;
+    line-height: 1.2;
+    color: #544E3B;
+}
+
+.diagram-piece.div-r { border-right: 1.5px dashed #544E3B; }
+.diagram-piece.div-b { border-bottom: 1.5px dashed #544E3B; }
+.diagram-piece  { font-size: 11px; }
+.dp-size {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.rc-lines { border-top: 1px solid #e4ddd0; padding-top: 14px; }
+
+.rc-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #544E3B;
+    padding: 6px 0;
+    letter-spacing: -0.02em;
+}
+
+.rc-line span:last-child {
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
+.rc-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-top: 1px solid #e4ddd0;
+    margin-top: 14px;
+    padding-top: 18px;
+    font-size: 14px;
+    color: #544E3B;
+    letter-spacing: -0.02em;
+}
+
+.rc-total .rct-price { font-size: 19px; font-weight: bold; }
+
+/* 사이즈 옵션 안내 + CTA */
+.option-guide { margin-top: 60px; text-align: center; }
+
+.og-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #544E3B;
+    letter-spacing: -0.02em;
+}
+
+.og-sub {
+    font-size: 13px;
+    color: #6F6C56;
+    margin: 8px 0 26px;
+    letter-spacing: -0.02em;
+}
+
+.og-rows {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.og-row { display: inline-flex; align-items: flex-end; gap: 14px; }
+.og-field { text-align: left; }
+
+.og-label {
+    display: block;
+    font-size: 13px;
+    color: #544E3B;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
+
+.og-box {
+    width: 175px;
+    padding: 13px 16px;
+    border: 1px solid #ddd6c9;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 14px;
+    color: #544E3B;
+    text-align: left;
+    letter-spacing: -0.02em;
+}
+
+.og-x {
+    font-size: 18px;
+    font-weight: bold;
+    color: #544E3B;
+    padding-bottom: 11px;
+}
+
+.cta-row { display: flex; gap: 24px; justify-content: center; margin-top: 46px; }
+
+.cta-row button {
+    width: 235px;
+    margin: 0;
+    padding: 15px 0;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: -0.02em;
+}
+
+.cta-kakao { background: #FEE500; color: #3C1E1E; }
+.cta-order { background: #544E3B; color: #fff; }
+
+/* ===== 견적 화면 데스크톱 레이아웃 (피그마 시안 기준) ===== */
+@media (min-width: 768px) {
+    #screenQuote .page-title { font-size: 30px; margin-top: 6vh; }
+    #screenQuote .page-desc { font-size: 15px; line-height: 1.75; margin-bottom: 44px; }
+    #screenQuote .size-input-row { gap: 22px; margin-bottom: 34px; }
+    #screenQuote .size-input-row input { width: 240px; padding: 16px; font-size: 15px; }
+    #screenQuote .size-input-row .times { font-size: 22px; }
+    #screenQuote .quote-submit { padding: 16px 50px; font-size: 15px; }
+    #quoteResult { max-width: 1320px; }
+    #quoteResult .result-placeholder { padding: 70px 0 70px; }
+    #screenQuote .faq { margin-top: 20px; }
+}
+
 @media (max-width: 767px) {
-    .page { padding: 28px 18px 50px; }
+    .page { padding: 14px 18px 50px; }
     .page-title { font-size: 20px; margin: 24px 0 12px; }
     .page-desc { font-size: 13px; margin-bottom: 28px; }
     .choice-grid { flex-direction: column; gap: 14px; width: 100%; }
@@ -1555,6 +1811,19 @@ function panelPrice(lengthCm) {
     return Math.round((ROLL_WIDTH / 100) * (lengthCm / 100) * UNIT_PRICE);
 }
 
+/* 조각 수 = 열 개수 × 행 개수 */
+function panelCountFor(W, H) {
+    return Math.ceil(W / ROLL_WIDTH) * Math.ceil(H / MAX_LENGTH);
+}
+
+/* 상세페이지 규칙 — 가로·세로를 바꿔 제작하면 장수가 줄어드는 경우 돌려서 제작한다.
+   예) 300×500 → 500×300 으로 보면 4장이 아니라 3장으로 제작 가능 */
+function orient(W, H) {
+    return (panelCountFor(H, W) < panelCountFor(W, H))
+        ? { W: H, H: W, rotated: true }
+        : { W: W, H: H, rotated: false };
+}
+
 /* 분할 방식별 열(가로) · 행(세로) 구성 */
 function splitLayout(mode, W, H) {
 
@@ -1711,22 +1980,69 @@ function toggleFaq(btn) {
 
 /* ---------- 견적 확인 화면 계산 ---------- */
 
-function calcQuote() {
+/* 제작 방식 3종 (분할 모드와 연결) */
+const QUOTE_MODES = [
+    { key: "optimal", name: "가장 저렴한 제작",
+      desc: "제작 비용을 최소화하는 제작 방식입니다." },
+    { key: "equal",   name: "균형감 있는 배치", recommended: true,
+      desc: "공간이 균형감 있게 보이는 방식으로, 가장 많이 선택하는 방식입니다." },
+    { key: "max",     name: "큰 러그 위주 제작",
+      desc: "러그 최대 크기 위주로 제작하는 방식입니다." }
+];
 
-    const W = Number(document.getElementById("qWidth").value);
-    const H = Number(document.getElementById("qHeight").value);
-    const box = document.getElementById("quoteResult");
+/* 현재 견적 상태 — 카드 선택이 바뀌면 옵션 안내만 다시 그린다 */
+let quoteW = 0, quoteH = 0, quoteModeIdx = 1;
 
-    if (!(W > 0) || !(H > 0)) {
-        box.innerHTML = '<div class="result-placeholder">가로와 세로를 입력해 주세요.</div>';
-        return;
-    }
+/* 분할 도식(미니 도면) HTML 생성 */
+function buildDiagram(modeKey, W, H) {
 
-    const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
-    const layout = splitLayout("optimal", W, H);
+    const layout = splitLayout(modeKey, W, H);
 
+    /* 시안과 동일한 고정 도식 박스 */
+    const dw = 300, dh = 220;
+
+    let html = '<div class="rug-diagram" style="width:' + dw +
+               'px;height:' + dh + 'px;">';
+
+    const nCols = layout.cols.length;
+    const nRows = layout.rows.length;
+
+    let index = 0, offsetY = 0;
+
+    layout.rows.forEach((rh, ri) => {
+
+        let offsetX = 0;
+
+        layout.cols.forEach((cw, ci) => {
+
+            index++;
+
+            /* 바깥 테두리는 두지 않고 내부 분할선만 점선으로 */
+            let cls = "diagram-piece";
+            if (ci < nCols - 1) cls += " div-r";
+            if (ri < nRows - 1) cls += " div-b";
+
+            html += '<div class="' + cls + '" style="left:' + (offsetX / W * 100) +
+                    '%;top:' + (offsetY / H * 100) + '%;width:' + (cw / W * 100) +
+                    '%;height:' + (rh / H * 100) + '%;">' + index +
+                    '<span class="dp-size">' + cw + '×' + rh + '</span></div>';
+
+            offsetX += cw;
+        });
+
+        offsetY += rh;
+    });
+
+    html += '</div>';
+    return html;
+}
+
+/* 한 가지 분할 방식의 집계(그룹·합계·장수) */
+function summarizeMode(modeKey, W, H) {
+
+    const layout = splitLayout(modeKey, W, H);
     const groups = {};
-    let total = 0, panelCount = 0;
+    let subtotal = 0, panelCount = 0;
 
     layout.cols.forEach(cw => {
         layout.rows.forEach(rh => {
@@ -1734,42 +2050,175 @@ function calcQuote() {
             const price = panelPrice(rh);
             if (!groups[key]) groups[key] = { count: 0, price: price };
             groups[key].count++;
-            total += price;
+            subtotal += price;
             panelCount++;
         });
     });
 
-    let html = '<div class="quote-box">';
+    return { groups: groups, subtotal: subtotal, panelCount: panelCount };
+}
 
-    if (fitsOne) {
-        html += '<span class="quote-badge single">● 1장으로 제작 가능</span>';
-        html += '<div class="quote-note">입력하신 ' + W + '×' + H +
-                'cm는 최대 제작 사이즈(' + ROLL_WIDTH + '×' + MAX_LENGTH +
-                'cm) 안이라 이음선 없이 한 장으로 나와요.</div>';
-    } else {
-        html += '<span class="quote-badge multi">● 분할 제작 필요</span>';
-        html += '<div class="quote-note"><b>' + W + '×' + H +
-                'cm</b>는 최대 제작 사이즈(' + ROLL_WIDTH + '×' + MAX_LENGTH +
-                'cm)를 초과해 <b>' + panelCount + '장</b>으로 나뉘어요.</div>';
-    }
+/* ---------- 주문 옵션 안내 ----------
+   상세페이지 규칙: 원단은 폭 200cm 고정이고 길이만 잘라 제작한다.
+   그래서 주문 옵션은 항상 "200 × (조각 길이를 10cm 단위로 올림) 이하" 가 된다.
+   예) 조각 125cm → 200×130 이하 / 355cm → 200×360 이하 */
+function optionTier(lengthCm) {
+    return Math.ceil(lengthCm / 10) * 10;
+}
 
-    Object.keys(groups).forEach(key => {
-        const g = groups[key];
-        html += '<div class="quote-line">' +
-                '<span class="q-label">' + key + 'cm × ' + g.count + '장</span>' +
-                '<span class="q-price">' + formatWon(g.price * g.count) + '</span>' +
-                '</div>';
+/* 선택된 제작 방식의 조각들을 규격별로 묶어 주문 안내를 만든다 */
+function buildOptionGuideInner(modeKey, W, H) {
+
+    const layout = splitLayout(modeKey, W, H);
+
+    const groups = {};
+    layout.rows.forEach(rh => {
+        layout.cols.forEach(cw => {
+            const key = cw + "×" + rh;
+            if (!groups[key]) groups[key] = { w: cw, h: rh, count: 0 };
+            groups[key].count++;
+        });
     });
 
-    html += '<div class="quote-total">' +
-            '<span class="t-label">예상 견적 · 총 ' + panelCount + '장</span>' +
-            '<span class="t-price">' + formatWon(total) + '</span>' +
-            '</div>';
+    let rows = "";
+    Object.keys(groups).forEach(key => {
+        const g = groups[key];
+        rows += '<div class="og-row">' +
+            '<div class="og-field"><label class="og-label">사이즈 *</label>' +
+                '<div class="og-box">' + g.w + '×' + g.h + '</div></div>' +
+            '<div class="og-field"><label class="og-label">옵션 *</label>' +
+                '<div class="og-box">200×' + optionTier(g.h) + ' 이하</div></div>' +
+            '<div class="og-x">X ' + g.count + '</div>' +
+        '</div>';
+    });
 
-    html += '<div class="quote-sub">릴리브 원단은 폭 200cm로 고정되어 있어, ' +
-            '폭이 좁아도 원단 한 폭 기준으로 계산됩니다.</div>';
+    return '<div class="og-title">러그 사이즈 옵션 선택 안내</div>' +
+        '<div class="og-sub">상세페이지에서 주문 시 아래와 같이 선택해 주세요.</div>' +
+        '<div class="og-rows">' + rows + '</div>' +
+        '<div class="cta-row">' +
+            '<button class="cta-kakao" onclick="openKakao()">카카오톡 상담하기</button>' +
+            '<button class="cta-order" onclick="openOrder()">맞춤 제작 주문하기</button>' +
+        '</div>';
+}
 
-    html += '</div>';
+/* 카드를 누르면 선택 상태와 주문 안내가 함께 바뀐다 */
+function selectQuoteMode(idx) {
+
+    quoteModeIdx = idx;
+
+    document.querySelectorAll("#quoteResult .result-card").forEach((card, i) => {
+        card.classList.toggle("selected", i === idx);
+        const mark = card.querySelector(".rc-mark");
+        if (mark) mark.innerText = (i === idx) ? "◉" : "○";
+    });
+
+    const guide = document.getElementById("optionGuide");
+    if (guide) {
+        guide.innerHTML = buildOptionGuideInner(
+            QUOTE_MODES[idx].key, quoteW, quoteH);
+    }
+}
+
+/* CTA 링크 — 아임웹 모달(iframe) 안에 갇히지 않도록 항상 새 탭으로 연다 */
+const KAKAO_CHAT_URL = "https://accounts.kakao.com/login/?continue=https%3A%2F%2Fpf.kakao.com%2F_xnixiAxb%2Fchat%3Fapi_ver%3D1.1%26kakao_agent%3Dsdk%252F1.44.0%2520os%252Fjavascript%2520sdk_type%252Fjavascript%2520lang%252Fko%2520device%252FWin32%2520origin%252Fhttps%25253A%25252F%25252Freliv.co.kr%26app_key%3D6cdbe7a83ae2b42151a0020f7f7242b7%26referer%3Dhttps%253A%252F%252Freliv.co.kr%252Fshop_view%252F%253Fidx%253D99#login";
+const ORDER_URL = "https://reliv.co.kr/shop_view/?idx=99#modal__";
+
+function openKakao() { window.open(KAKAO_CHAT_URL, "_blank", "noopener"); }
+function openOrder() { window.open(ORDER_URL, "_blank", "noopener"); }
+
+function calcQuote() {
+
+    const inW = Number(document.getElementById("qWidth").value);
+    const inH = Number(document.getElementById("qHeight").value);
+    const box = document.getElementById("quoteResult");
+
+    if (!(inW > 0) || !(inH > 0)) {
+        box.innerHTML = '<div class="result-placeholder">가로와 세로를 입력해 주세요.</div>';
+        return;
+    }
+
+    /* 장수가 줄어드는 방향이 있으면 돌려서 제작 */
+    const o = orient(inW, inH);
+    const W = o.W, H = o.H;
+
+    quoteW = W;
+    quoteH = H;
+
+    const rotateNote = o.rotated
+        ? '<div class="result-sub">입력하신 ' + inW + '×' + inH +
+          'cm는 방향을 돌려 <b>' + W + '×' + H + 'cm</b>로 제작하면 더 적은 장수로 나와요.</div>'
+        : '';
+
+    const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
+
+    /* 1장 제작 가능 — 방식 비교가 필요 없으므로 카드 하나만 */
+    if (fitsOne) {
+
+        const price = panelPrice(H);
+        quoteModeIdx = 0;
+
+        let html = '<div class="result-head">' +
+                   '<div class="result-title">🧾 예상 견적 결과</div>' +
+                   '<div class="result-sub">한 장으로 제작 가능한 사이즈입니다.</div>' +
+                   rotateNote + '</div>';
+
+        html += '<div class="result-grid"><div class="result-card selected">' +
+                '<div class="rc-name">◉ 1장으로 제작 가능</div>' +
+                '<div class="rc-desc">' + W + '×' + H + 'cm는 최대 제작 사이즈(' +
+                    ROLL_WIDTH + '×' + MAX_LENGTH + 'cm) 안이라 이음선 없이 한 장으로 나와요.</div>' +
+                buildDiagram("optimal", W, H) +
+                '<div class="rc-lines"><div class="rc-line"><span>' + W + '×' + H +
+                    'cm x 1장</span><span>' + formatWon(price) + '</span></div></div>' +
+                '<div class="rc-total"><span>예상 총 견적</span>' +
+                    '<span class="rct-price">' + formatWon(price) + '</span></div>' +
+                '</div></div>';
+
+        html += '<div class="option-guide" id="optionGuide">' +
+                buildOptionGuideInner("optimal", W, H) + '</div>';
+
+        box.innerHTML = html;
+        return;
+    }
+
+    /* 분할 제작 — 3가지 방식 비교 (기본 선택은 추천 방식) */
+    quoteModeIdx = QUOTE_MODES.findIndex(m => m.recommended);
+    if (quoteModeIdx < 0) quoteModeIdx = 0;
+
+    let cards = "";
+
+    QUOTE_MODES.forEach((m, i) => {
+
+        const s = summarizeMode(m.key, W, H);
+        const isSel = (i === quoteModeIdx);
+
+        let lines = "";
+        Object.keys(s.groups).forEach(key => {
+            const g = s.groups[key];
+            lines += '<div class="rc-line"><span>' + key + 'cm x ' + g.count +
+                     '장</span><span>' + formatWon(g.price * g.count) + '</span></div>';
+        });
+
+        cards += '<div class="result-card' + (isSel ? ' selected' : '') +
+                 '" onclick="selectQuoteMode(' + i + ')">';
+        if (m.recommended) cards += '<div class="rc-badge">추천</div>';
+        cards += '<div class="rc-name"><span class="rc-mark">' +
+                     (isSel ? '◉' : '○') + '</span> ' + m.name +
+                     (m.recommended ? ' ✨' : '') + '</div>' +
+                 '<div class="rc-desc">' + m.desc + '</div>' +
+                 buildDiagram(m.key, W, H) +
+                 '<div class="rc-lines">' + lines + '</div>' +
+                 '<div class="rc-total"><span>예상 총 견적</span>' +
+                     '<span class="rct-price">' + formatWon(s.subtotal) + '</span></div>' +
+                 '</div>';
+    });
+
+    let html = '<div class="result-head">' +
+               '<div class="result-title">🧾 예상 견적 결과</div>' +
+               '<div class="result-sub">제작 방식을 비교해보세요.</div>' +
+               rotateNote + '</div>';
+    html += '<div class="result-grid">' + cards + '</div>';
+    html += '<div class="option-guide" id="optionGuide">' +
+            buildOptionGuideInner(QUOTE_MODES[quoteModeIdx].key, W, H) + '</div>';
 
     box.innerHTML = html;
 }
