@@ -4,10 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reliv Rug Planner</title>
-
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
+
+
 * { box-sizing: border-box; }
 
+:root {
+    --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+            system-ui, Roboto, 'Malgun Gothic', sans-serif;
+}
+
+body, button, input, select, textarea {
+    font-family: var(--font);
+}
+/* .logo 규칙에 추가 */
+.logo img { height: 26px; width: auto; display: block; }
 
 .custom-rug-box {
     background: #fbf6ef;
@@ -88,7 +101,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: var(--font);
     background: #f7f4ef;
     color: #5d3b21;
 }
@@ -142,7 +155,7 @@ button {
     font-size: 14px;
     background: #754820;
     color: white;
-    font-family: inherit;
+    /* font-family: inherit; */
 }
 
 button.secondary { background: #eee7df; color: #684326; }
@@ -203,7 +216,7 @@ button.active { background: #d99046; color: white; }
     background: #eee7df;
     color: #684326;
     font-size: 14px;
-    font-family: inherit;
+    /* font-family: inherit; */
     cursor: pointer;
     appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23684326'/></svg>");
@@ -391,6 +404,7 @@ button.active { background: #d99046; color: white; }
 
 /* ---------- 선택 정보 ---------- */
 .selection-info {
+   display: none;   /* ← 추가: 기본은 숨김 */
     position: fixed;
     bottom: 20px;
     right: 25px;
@@ -401,43 +415,27 @@ button.active { background: #d99046; color: white; }
     font-size: 13px;
     line-height: 1.6;
 }
-
+#screenPlanner.active ~ .selection-info { display: block; }
 /* ==========================================================
    모바일 (767px 이하): 위에 캔버스, 아래에 컨트롤 시트
    ========================================================== */
 @media (max-width: 767px) {
 
-    html, body { height: 100%; overflow: hidden; }
+    .app { flex-direction: column; height: 100dvh; }
 
-    .app {
-        flex-direction: column;
-        height: 100dvh;
-        overflow: hidden;
-    }
-
-    .main {
-        order: 1;
-        flex: 0 0 54%;
-        min-height: 0;
-        overflow: hidden;
-    }
+    .main { order: 1; min-height: 0; flex:none;}
 
     .sidebar {
         order: 2;
-        flex: 1 1 auto;
         width: 100%;
-        height: auto;
-        min-height: 0;
+        height: 46%;
+        min-height: 250px;
         border-right: none;
         border-top: 1px solid #e8e0d6;
         border-radius: 18px 18px 0 0;
         padding: 16px 16px 28px;
         box-shadow: 0 -6px 20px rgba(80, 50, 20, 0.08);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
     }
-    .sidebar::-webkit-scrollbar { width: 0; display: none; }
 
     .logo { display: none; }
     .usage-guide { display: none; }
@@ -454,32 +452,302 @@ button.active { background: #d99046; color: white; }
     .division-buttons { display: flex; gap: 8px; }
     .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
-    .toolbar { height: 52px; flex: 0 0 52px; padding: 0 12px; }
-    .obj-name { font-size: 11px; }
-    .size-label { font-size: 10px; }
-    .rug-piece { font-size: 10px; }
-    .rug-piece .piece-size { font-size: 9px; }
-    .workspace {
-        flex: 1 1 auto;
-        min-height: 0;
-        aspect-ratio: auto;
-        overflow: hidden;
-        padding: 20px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .toolbar { height: 52px; padding: 0 12px; }
+      .workspace {
+        padding: 26px 14px 14px;
+        aspect-ratio: 1 / 1;      /* ← 추가 */
+        flex: none;               /* ← 추가: flex:1 무력화 */
     }
 }
+
+
+
+/* ==========================================================
+   화면 전환 (홈 / 견적 확인 / 배치 시뮬레이터)
+   ========================================================== */
+.screen { display: none; }
+.screen.active { display: block; }
+#screenPlanner.active { display: flex; }
+
+/* ---------- 공통 레이아웃 ---------- */
+.page {
+    min-height: 100vh;
+    padding: 60px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+}
+
+/* 변경 후 */
+.page-title {
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.5;
+    margin: 40px 0 14px;
+    color: #3d3a37;
+}
+
+.page-desc {
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.7;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+/* 변경 후 */
+.page-logo {
+    margin-top: auto;
+    padding-top: 60px;
+}
+
+.page-logo img {
+    height: 28px;
+    width: auto;
+    display: block;
+}
+.back-btn {
+    align-self: flex-start;
+    width: auto;
+    padding: 9px 16px;
+    background: transparent;
+    color: #8a6a4c;
+    font-size: 13px;
+}
+
+/* .choice-grid 규칙에 추가 */
+.choice-grid {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 80px;   /* ← 추가 */
+}
+
+.choice-card {
+    width: 320px;
+    padding: 40px 28px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.choice-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(80, 50, 20, 0.1);
+}
+
+.choice-card.light { background: #f8f3ee; }
+.choice-card.dark { background: #e3ddce; }
+
+.choice-card .c-sub {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-bottom: 10px;
+}
+
+.choice-card .c-main {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+/* ---------- 견적 입력 ---------- */
+.size-input-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.size-input-row input {
+    width: 160px;
+    margin: 0;
+    text-align: center;
+}
+
+.size-input-row .times {
+    font-size: 20px;
+    opacity: 0.4;
+}
+
+.quote-submit {
+    width: auto;
+    padding: 15px 42px;
+    background: #5c4a35;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#quoteResult {
+    width: 100%;
+    max-width: 620px;
+    margin: 46px 0 60px;
+    font-size: 13px;
+    text-align: center;
+}
+
+#quoteResult .result-placeholder { opacity: 0.45; font-size: 12px; }
+#quoteResult .quote-box { text-align: left; }
+
+/* ---------- FAQ 아코디언 ---------- */
+.faq {
+    width: 100%;
+    max-width: 760px;
+    border-top: 1px solid #eee5da;
+}
+
+.faq-item { border-bottom: 1px solid #eee5da; }
+
+.faq-q {
+    width: 100%;
+    margin: 0;
+    padding: 18px 6px;
+    background: transparent;
+    color: #5d3b21;
+    font-size: 14px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-q .arrow { font-size: 10px; opacity: 0.5; }
+.faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+
+.faq-a {
+    display: none;
+    padding: 2px 6px 24px;
+    font-size: 13px;
+    line-height: 1.85;
+    opacity: 0.9;
+}
+
+.faq-item.open .faq-a { display: block; }
+
+.faq-a b { color: #5d3b21; }
+.faq-a .accent { color: #c0663a; font-weight: bold; }
+.faq-a ul { margin: 8px 0; padding-left: 20px; }
+.faq-a .block { margin-bottom: 18px; }
+
+@media (max-width: 767px) {
+    .page { padding: 28px 18px 50px; }
+    .page-title { font-size: 20px; margin: 24px 0 12px; }
+    .page-desc { font-size: 13px; margin-bottom: 28px; }
+    .choice-grid { flex-direction: column; gap: 14px; width: 100%; }
+    .choice-card { width: 100%; padding: 26px 20px; }
+    .size-input-row { gap: 10px; }
+    .size-input-row input { width: 100%; }
+    .page-logo { padding-top: 40px; }
+    .page-logo img { height: 22px; }
+}
+
+
 </style>
 </head>
 
 <body>
 
-<div class="app">
+    <!-- ===== 화면 1 : 홈 ===== -->
+<div class="screen active" id="screenHome">
+    <div class="page">
+        <h1 class="page-title">러그 맞춤 제작,<br>어떻게 시작하면 될까요?</h1>
+
+        <div class="choice-grid">
+            <div class="choice-card light" onclick="showScreen('quote')">
+                <div class="c-sub">원하는 러그 사이즈가 있어요.</div>
+                <div class="c-main">📏 견적 확인하기 &nbsp;→</div>
+            </div>
+            <div class="choice-card dark" onclick="showScreen('planner')">
+                <div class="c-sub">아직 어떤 사이즈가 맞을지 모르겠어요.</div>
+                <div class="c-main">🏡 러그 배치해보기 &nbsp;→</div>
+            </div>
+        </div>
+
+        <div class="page-logo"><img src="images/logo.png" alt="reliv"></div>
+    </div>
+</div>
+
+<!-- ===== 화면 2 : 견적 확인 ===== -->
+<div class="screen" id="screenQuote">
+    <div class="page">
+        <button class="back-btn" onclick="showScreen('home')">← 처음으로</button>
+
+        <h1 class="page-title">원하는 러그 사이즈를 입력해 주세요.</h1>
+        <p class="page-desc">가로와 세로 길이를 입력하면<br>예상 견적과 제작 방식을 확인할 수 있습니다.</p>
+
+        <div class="size-input-row">
+            <input id="qWidth" type="number" placeholder="가로(cm)" min="10">
+            <span class="times">✕</span>
+            <input id="qHeight" type="number" placeholder="세로(cm)" min="10">
+        </div>
+
+        <button class="quote-submit" onclick="calcQuote()">예상 견적 확인하기</button>
+
+        <div id="quoteResult">
+            <div class="result-placeholder">결과가 이곳에 표시됩니다.</div>
+        </div>
+
+        <div class="faq">
+            <div class="faq-item">
+                <button class="faq-q" onclick="toggleFaq(this)">
+                    <span>📏 사이즈를 어떻게 재야 하나요?</span><span class="arrow">▼</span>
+                </button>
+                <div class="faq-a">
+                    맞춤 제작은 <b>직접 측정한 사이즈</b>를 기준으로 제작됩니다.<br>
+                    러그를 깔고 싶은 공간의 가로와 세로를 cm 단위로 측정해 입력해 주세요.
+                    <ul>
+                        <li>공간 전체를 채우고 싶다면 <b>벽부터 벽까지</b></li>
+                        <li>일부 공간에만 깔고 싶다면 <b>러그가 들어갈 공간만</b></li>
+                    </ul>
+                    정확한 측정이 어렵거나 집 전체 설계가 필요한 경우에는 상담을 통해 도와드릴 수 있습니다.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q" onclick="toggleFaq(this)">
+                    <span>📏 주문할 때 결 방향도 신경 써야 하나요?</span><span class="arrow">▼</span>
+                </button>
+                <div class="faq-a">
+                    <div class="block">
+                        <b>여러 장 이어 쓸 때는 결 방향도 확인해주세요.</b><br>
+                        릴리브 러그는 원단을 세로 방향으로 짜서, 러그마다 결이 위→아래로 흘러요.<br>
+                        여러 장을 나란히 이어서 한 공간에 쓰실 계획이라면, 결 방향이 서로 맞아야 색이 다르게 보이지 않아요.
+                    </div>
+                    <div class="block">
+                        <b>주문할 때는 이렇게 입력해주세요.</b><br>
+                        릴리브 원단은 폭 200cm로 고정되어 있고, 원하시는 길이만큼 잘라 제작해요.<br>
+                        그래서 옵션은 항상 <span class="accent">200(고정폭) ✕ 결을 맞추고 싶은 쪽 길이</span>로 선택하시면 돼요.<br><br>
+                        예시 1) 필요한 공간이 가로100cm ✕ 세로380cm 라면 → 200X380 으로 선택<br>
+                        예시 2) 필요한 공간이 가로85cm ✕ 세로200cm 라면 → 200X200 으로 선택
+                    </div>
+                    간혹 짧은 쪽을 길이 값에 넣으면(예 : 200X85) 결 방향이 90도 돌아간 상태로 제작돼요.<br>
+                    한 장만 따로 쓰실 땐 상관없지만, 여러 장을 이어서 쓰실 경우 러그 색이 달라보일 수 있어요.<br>
+                    사이즈 조합이 헷갈리시면, 상담을 통해 확인해드립니다.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q" onclick="toggleFaq(this)">
+                    <span>📏 왜 2장 이상으로 제작되나요?</span><span class="arrow">▼</span>
+                </button>
+                <div class="faq-a">
+                    200×400cm까지는 한 장 제작이 가능합니다.<br>
+                    이를 초과하는 경우, 여러 장으로 제작됩니다.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="app screen" id="screenPlanner">
 
     <aside class="sidebar">
 
-        <div class="logo">reliv,</div>
+       <div class="logo"><img src="images/logo.png" alt="reliv"></div>
            <div class="section">
             <h3>가구</h3>
 
@@ -1101,8 +1369,8 @@ function fitToWorkspace() {
     const workspace = document.querySelector(".workspace");
     const isMobile = window.innerWidth < 768;
 
-    const padW = isMobile ? 40 : 80;
-    const padH = isMobile ? 40 : 90;
+    const padW = isMobile ? 50 : 80;
+    const padH = isMobile ? 50 : 90;
 
     const availW = Math.max(workspace.clientWidth - padW, 150);
     const availH = Math.max(workspace.clientHeight - padH, 150);
@@ -1120,8 +1388,7 @@ function refreshView() {
     room.style.width = cmToPx(CANVAS_W) + "px";
     room.style.height = cmToPx(CANVAS_H) + "px";
 
-    const compactThreshold = window.innerWidth < 768 ? 0.25 : 0.5;
-    room.classList.toggle("compact", scale < compactThreshold);
+    room.classList.toggle("compact", scale < 0.5);
 
     renderAll();
 }
@@ -1130,9 +1397,7 @@ window.addEventListener("resize", function () {
     fitToWorkspace();
     refreshView();
 });
-window.addEventListener("orientationchange", function () {
-    setTimeout(function () { fitToWorkspace(); refreshView(); }, 300);
-});
+
 
 /* ---------- 러그 분할 ---------- */
 
@@ -1416,13 +1681,120 @@ function updateQuote() {
 
 /* ---------- 초기화 ---------- */
 
+/* ---------- 화면 전환 ---------- */
+
+function showScreen(name) {
+
+    const ids = { home: "screenHome", quote: "screenQuote", planner: "screenPlanner" };
+
+    Object.values(ids).forEach(id =>
+        document.getElementById(id).classList.remove("active"));
+
+    document.getElementById(ids[name]).classList.add("active");
+
+    /* 배치 화면은 보인 뒤에 크기를 다시 재야 배율이 맞는다 */
+    if (name === "planner") {
+        fitToWorkspace();
+        refreshView();
+    }
+
+    window.scrollTo(0, 0);
+}
+
+
+/* ---------- FAQ 아코디언 ---------- */
+
+function toggleFaq(btn) {
+    btn.parentElement.classList.toggle("open");
+}
+
+
+/* ---------- 견적 확인 화면 계산 ---------- */
+
+function calcQuote() {
+
+    const W = Number(document.getElementById("qWidth").value);
+    const H = Number(document.getElementById("qHeight").value);
+    const box = document.getElementById("quoteResult");
+
+    if (!(W > 0) || !(H > 0)) {
+        box.innerHTML = '<div class="result-placeholder">가로와 세로를 입력해 주세요.</div>';
+        return;
+    }
+
+    const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
+    const layout = splitLayout("optimal", W, H);
+
+    const groups = {};
+    let total = 0, panelCount = 0;
+
+    layout.cols.forEach(cw => {
+        layout.rows.forEach(rh => {
+            const key = cw + "×" + rh;
+            const price = panelPrice(rh);
+            if (!groups[key]) groups[key] = { count: 0, price: price };
+            groups[key].count++;
+            total += price;
+            panelCount++;
+        });
+    });
+
+    let html = '<div class="quote-box">';
+
+    if (fitsOne) {
+        html += '<span class="quote-badge single">● 1장으로 제작 가능</span>';
+        html += '<div class="quote-note">입력하신 ' + W + '×' + H +
+                'cm는 최대 제작 사이즈(' + ROLL_WIDTH + '×' + MAX_LENGTH +
+                'cm) 안이라 이음선 없이 한 장으로 나와요.</div>';
+    } else {
+        html += '<span class="quote-badge multi">● 분할 제작 필요</span>';
+        html += '<div class="quote-note"><b>' + W + '×' + H +
+                'cm</b>는 최대 제작 사이즈(' + ROLL_WIDTH + '×' + MAX_LENGTH +
+                'cm)를 초과해 <b>' + panelCount + '장</b>으로 나뉘어요.</div>';
+    }
+
+    Object.keys(groups).forEach(key => {
+        const g = groups[key];
+        html += '<div class="quote-line">' +
+                '<span class="q-label">' + key + 'cm × ' + g.count + '장</span>' +
+                '<span class="q-price">' + formatWon(g.price * g.count) + '</span>' +
+                '</div>';
+    });
+
+    html += '<div class="quote-total">' +
+            '<span class="t-label">예상 견적 · 총 ' + panelCount + '장</span>' +
+            '<span class="t-price">' + formatWon(total) + '</span>' +
+            '</div>';
+
+    html += '<div class="quote-sub">릴리브 원단은 폭 200cm로 고정되어 있어, ' +
+            '폭이 좁아도 원단 한 폭 기준으로 계산됩니다.</div>';
+
+    html += '</div>';
+
+    box.innerHTML = html;
+}
+
+/* 견적 입력칸에서 Enter로 바로 계산 */
+["qWidth", "qHeight"].forEach(id => {
+    document.getElementById(id).addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            calcQuote();
+            this.blur();
+        }
+    });
+});
+
+
+/* ---------- 초기화 ---------- */
+
 buildRugPresets();
 changeFurniType();
 fitToWorkspace();
 refreshView();
-
-/* 기본으로 중형 러그 하나를 올려둔다 */
 addRug(3);
+
+showScreen("home");
 
 </script>
 
