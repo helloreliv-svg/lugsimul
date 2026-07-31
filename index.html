@@ -122,8 +122,6 @@ body {
     font-family: Georgia, serif;
     font-size: 34px;
     margin-bottom: 30px;
-    cursor: pointer;
-    width: fit-content;
 }
 
 .section { margin-bottom: 26px; }
@@ -772,9 +770,9 @@ button.active { background: #d99046; color: white; }
 
 .diagram-piece.div-r { border-right: 1.5px dashed #544E3B; }
 .diagram-piece.div-b { border-bottom: 1.5px dashed #544E3B; }
-.diagram-piece  { font-size: 11px; }
+.diagram-piece  { font-size: 10px; }
 .dp-size {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
 }
 
@@ -1800,30 +1798,24 @@ function zoomOut() {
    제작 견적 계산
    - 최대 단일 제작 사이즈: 200 × 400 cm
    - 폭은 200cm 롤 기준으로 청구 (100cm 판도 200cm로 계산)
-   - 세 가지 분할 방식의 합계 금액은 항상 동일
+   - 길이는 10cm 단위로 올려서 과금 (판매 옵션이 "200×N 이하" 단위)
+     예) 235cm → 200×240 이하 구간 → 218,400원
    ========================================================== */
 
-const ROLL_WIDTH = 200;    // 롤 폭 (cm)
-const MAX_LENGTH = 400;    // 최대 제작 길이 (cm)
-const UNIT_PRICE = 45500;  // 원/㎡
-const BASE_LENGTH = 300;   // 최적 분할 기준판 길이 (cm)
+const ROLL_WIDTH = 200;      // 롤 폭 (cm)
+const MAX_LENGTH = 400;      // 최대 제작 길이 (cm)
+const UNIT_PRICE = 45500;    // 원/㎡ (= 폭 200 기준 10cm당 9,100원)
+const BASE_LENGTH = 300;     // 최적 분할 기준판 길이 (cm)
+const LENGTH_STEP = 10;      // 과금 단위 (cm)
 
-/* 판 1장 금액 — 폭은 롤 폭 기준으로 청구 */
+/* 판매 옵션 구간 — 길이를 10cm 단위로 올림 */
+function optionTier(lengthCm) {
+    return Math.ceil(lengthCm / LENGTH_STEP) * LENGTH_STEP;
+}
+
+/* 판 1장 금액 — 폭은 롤 폭 기준, 길이는 10cm 단위로 올려서 청구 */
 function panelPrice(lengthCm) {
-    return Math.round((ROLL_WIDTH / 100) * (lengthCm / 100) * UNIT_PRICE);
-}
-
-/* 조각 수 = 열 개수 × 행 개수 */
-function panelCountFor(W, H) {
-    return Math.ceil(W / ROLL_WIDTH) * Math.ceil(H / MAX_LENGTH);
-}
-
-/* 상세페이지 규칙 — 가로·세로를 바꿔 제작하면 장수가 줄어드는 경우 돌려서 제작한다.
-   예) 300×500 → 500×300 으로 보면 4장이 아니라 3장으로 제작 가능 */
-function orient(W, H) {
-    return (panelCountFor(H, W) < panelCountFor(W, H))
-        ? { W: H, H: W, rotated: true }
-        : { W: W, H: H, rotated: false };
+    return Math.round((ROLL_WIDTH / 100) * (optionTier(lengthCm) / 100) * UNIT_PRICE);
 }
 
 /* 분할 방식별 열(가로) · 행(세로) 구성 */
@@ -1945,7 +1937,8 @@ function updateQuote() {
             '</div>';
 
     html += '<div class="quote-sub">최대 단일 제작 사이즈는 ' + ROLL_WIDTH + '×' +
-            MAX_LENGTH + 'cm예요. 어떤 분할 방식을 골라도 합계 금액은 같습니다.</div>';
+            MAX_LENGTH + 'cm예요. 길이는 10cm 단위로 올려서 계산되며, ' +
+            '분할 방식에 따라 합계 금액이 달라질 수 있습니다.</div>';
 
     box.innerHTML = html;
 }
@@ -2061,12 +2054,9 @@ function summarizeMode(modeKey, W, H) {
 }
 
 /* ---------- 주문 옵션 안내 ----------
-   상세페이지 규칙: 원단은 폭 200cm 고정이고 길이만 잘라 제작한다.
-   그래서 주문 옵션은 항상 "200 × (조각 길이를 10cm 단위로 올림) 이하" 가 된다.
+   원단은 폭 200cm 고정이고 길이만 잘라 제작하므로
+   주문 옵션은 항상 "200 × (조각 길이를 10cm 단위로 올림) 이하" — optionTier() 사용.
    예) 조각 125cm → 200×130 이하 / 355cm → 200×360 이하 */
-function optionTier(lengthCm) {
-    return Math.ceil(lengthCm / 10) * 10;
-}
 
 /* 선택된 제작 방식의 조각들을 규격별로 묶어 주문 안내를 만든다 */
 function buildOptionGuideInner(modeKey, W, H) {
@@ -2123,33 +2113,24 @@ function selectQuoteMode(idx) {
 
 /* CTA 링크 — 아임웹 모달(iframe) 안에 갇히지 않도록 항상 새 탭으로 연다 */
 const KAKAO_CHAT_URL = "https://accounts.kakao.com/login/?continue=https%3A%2F%2Fpf.kakao.com%2F_xnixiAxb%2Fchat%3Fapi_ver%3D1.1%26kakao_agent%3Dsdk%252F1.44.0%2520os%252Fjavascript%2520sdk_type%252Fjavascript%2520lang%252Fko%2520device%252FWin32%2520origin%252Fhttps%25253A%25252F%25252Freliv.co.kr%26app_key%3D6cdbe7a83ae2b42151a0020f7f7242b7%26referer%3Dhttps%253A%252F%252Freliv.co.kr%252Fshop_view%252F%253Fidx%253D99#login";
-const ORDER_URL = "https://reliv.co.kr/shop_view/?idx=99#modal__";
+const ORDER_URL = "https://reliv.co.kr/shop_view/?idx=121";
 
 function openKakao() { window.open(KAKAO_CHAT_URL, "_blank", "noopener"); }
 function openOrder() { window.open(ORDER_URL, "_blank", "noopener"); }
 
 function calcQuote() {
 
-    const inW = Number(document.getElementById("qWidth").value);
-    const inH = Number(document.getElementById("qHeight").value);
+    const W = Number(document.getElementById("qWidth").value);
+    const H = Number(document.getElementById("qHeight").value);
     const box = document.getElementById("quoteResult");
 
-    if (!(inW > 0) || !(inH > 0)) {
+    if (!(W > 0) || !(H > 0)) {
         box.innerHTML = '<div class="result-placeholder">가로와 세로를 입력해 주세요.</div>';
         return;
     }
 
-    /* 장수가 줄어드는 방향이 있으면 돌려서 제작 */
-    const o = orient(inW, inH);
-    const W = o.W, H = o.H;
-
     quoteW = W;
     quoteH = H;
-
-    const rotateNote = o.rotated
-        ? '<div class="result-sub">입력하신 ' + inW + '×' + inH +
-          'cm는 방향을 돌려 <b>' + W + '×' + H + 'cm</b>로 제작하면 더 적은 장수로 나와요.</div>'
-        : '';
 
     const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
 
@@ -2162,7 +2143,7 @@ function calcQuote() {
         let html = '<div class="result-head">' +
                    '<div class="result-title">🧾 예상 견적 결과</div>' +
                    '<div class="result-sub">한 장으로 제작 가능한 사이즈입니다.</div>' +
-                   rotateNote + '</div>';
+                   '</div>';
 
         html += '<div class="result-grid"><div class="result-card selected">' +
                 '<div class="rc-name">◉ 1장으로 제작 가능</div>' +
@@ -2216,8 +2197,7 @@ function calcQuote() {
 
     let html = '<div class="result-head">' +
                '<div class="result-title">🧾 예상 견적 결과</div>' +
-               '<div class="result-sub">제작 방식을 비교해보세요.</div>' +
-               rotateNote + '</div>';
+               '<div class="result-sub">제작 방식을 비교해보세요.</div></div>';
     html += '<div class="result-grid">' + cards + '</div>';
     html += '<div class="option-guide" id="optionGuide">' +
             buildOptionGuideInner(QUOTE_MODES[quoteModeIdx].key, W, H) + '</div>';
