@@ -220,17 +220,11 @@ button.active { background: #d99046; color: white; }
     border-color: #d0b494;
 }
 
-.preset-card .shape {
-    background: rgba(204, 157, 102, 0.4);
-    border: 1.5px solid #bd8042;
-    margin: 0 auto 7px;
-}
-
 .preset-card .p-name {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
     display: block;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
 }
 
 .preset-card .p-size {
@@ -238,63 +232,95 @@ button.active { background: #d99046; color: white; }
     opacity: 0.75;
 }
 
-/* ---------- 가구 2차 선택지 ---------- */
+/* ---------- 평형 선택 ---------- */
+.pyeong-buttons { display: flex; gap: 8px; }
+
+.pyeong-btn {
+    flex: 1;
+    margin: 0;
+    padding: 12px 4px;
+    background: #fbf6ef;
+    border: 1px solid #e6d8c6;
+    border-radius: 10px;
+    color: #5d3b21;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.pyeong-btn span { font-size: 11px; font-weight: normal; opacity: 0.7; }
+.pyeong-btn:hover { background: #f3e6d5; }
+.pyeong-btn.active { background: #754820; color: #fff; border-color: #754820; }
+.pyeong-btn.active span { opacity: 0.85; }
+
+/* ---------- 가구 탭 + 하위 크기 카드 ---------- */
 .furni-group { margin-bottom: 8px; }
 
-.furni-select {
-    width: 100%;
-    padding: 13px;
-    border: none;
-    border-radius: 8px;
-    margin-bottom: 8px;
+.furni-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+
+.furni-tab {
+    flex: 1;
+    margin: 0;
+    padding: 11px 4px;
     background: #eee7df;
     color: #684326;
+    border-radius: 8px;
     font-size: 14px;
-    /* font-family: inherit; */
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23684326'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
 }
 
-.furni-label .caret {
-    font-size: 11px;
-}
+.furni-tab.active { background: #754820; color: #fff; }
 
 .furni-options {
     display: none;
-    gap: 6px;
-    padding: 4px 0 10px;
+    gap: 8px;
+    padding: 2px 0 6px;
 }
 
 .furni-group.open .furni-options { display: flex; }
 
-.furni-options button {
+.furni-card {
     flex: 1;
-    padding: 9px 4px;
     margin: 0;
+    padding: 12px 6px;
     background: #fbf6ef;
     border: 1px solid #e6d8c6;
-    color: #5d3b21;
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-.furni-options button:hover { background: #f3e6d5; }
-.furni-options button span { display: block; font-size: 10px; opacity: 0.7; }
-
-/* ---------- 선택 항목 편집 ---------- */
-#editPanel {
-    background: #fbf6ef;
-    border: 1px solid #e8d9c5;
     border-radius: 10px;
-    padding: 16px;
+    color: #5d3b21;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    line-height: 1.3;
 }
 
-#editPanel.hidden { display: none; }
+.furni-card:hover { background: #f3e6d5; }
+.furni-card .fc-name { font-size: 13px; font-weight: bold; }
+.furni-card .fc-size { font-size: 11px; opacity: 0.7; }
 
-#editTitle { font-size: 14px; font-weight: bold; margin-bottom: 12px; }
+/* ---------- 맞춤 러그 생성 + 회전 버튼 ---------- */
+.custom-actions { display: flex; gap: 8px; }
+.custom-actions > button:first-child { flex: 1; margin-bottom: 0; }
+
+.rotate-btn {
+    flex: 0 0 auto;
+    width: auto;
+    margin-bottom: 0;
+    padding: 0 14px;
+    background: #eee7df;
+    color: #684326;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.rotate-btn span { font-size: 10px; }
+.rotate-btn:hover { background: #e4d9c9; }
 
 .info {
     background: #f8f3ec;
@@ -329,12 +355,10 @@ button.active { background: #d99046; color: white; }
     box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1); */
 
     position: relative;
- 
-    border: 1px solid #f7f4ef;
+    background: white;
+    border: 1px solid #ece3d6;
     margin: 0 auto;
-    /* background: url(images/room.png) center / cover no-repeat;
-    background-color: white;
-    box-shadow: 0 10px 30px rgba(80, 50, 20, 0.1); */
+    box-shadow: 0 8px 24px rgba(80, 50, 20, 0.08);
 }
 
 /* ---------- 배치 객체 공통 ---------- */
@@ -351,7 +375,7 @@ button.active { background: #d99046; color: white; }
 }
 
 .object:active { cursor: grabbing; }
-.object.selected { outline: 2px dashed #d0b494; outline-offset: 2px; }
+.object.selected { outline: 3px dashed #bd8042; outline-offset: 1px; }
 
 .obj-name {
     font-size: 13px;
@@ -1094,14 +1118,21 @@ button.active { background: #d99046; color: white; }
     <aside class="sidebar">
 
        <div class="logo" onclick="showScreen('home')" title="처음으로"><img src="images/logo.png" alt="reliv"></div>
+
+        <!-- ===== 평형 선택 ===== -->
+        <div class="section">
+            <h3>평형 선택</h3>
+            <div class="pyeong-buttons" id="pyeongButtons"></div>
+        </div>
+
            <div class="section">
             <h3>가구</h3>
 
        <div class="furni-group open">
-            <select class="furni-select" id="furniType" onchange="changeFurniType()">
-                <option value="sofa">소파</option>
-                <option value="bed">침대</option>
-            </select>
+            <div class="furni-tabs">
+                <button class="furni-tab active" data-type="sofa" onclick="selectFurniType('sofa')">소파</button>
+                <button class="furni-tab" data-type="bed" onclick="selectFurniType('bed')">침대</button>
+            </div>
             <div class="furni-options" id="furniOptions"></div>
         </div>
 
@@ -1125,53 +1156,16 @@ button.active { background: #d99046; color: white; }
                         <input id="customHeight" type="number" value="400" min="10">
                     </div>
                 </div>
-                <button onclick="addCustomRug()">맞춤 러그 생성</button>
+                <div class="custom-actions">
+                    <button onclick="addCustomRug()">맞춤 러그 생성</button>
+                    <button class="rotate-btn" onclick="rotateSelected(90)" title="선택한 러그 90° 회전">↻<span>회전</span></button>
+                </div>
                 <div class="custom-hint" id="customHint"></div>
             </div>
         </div>
 
    
         </div>
-
-        <!-- ===== 선택 항목 편집 ===== -->
-        <div class="section">
-            <h3>선택 항목 편집</h3>
-            <div id="editPanel" class="hidden">
-                <div id="editTitle">-</div>
-                <div class="input-row">
-                    <div>
-                        <label>가로 (cm)</label>
-                        <input id="editWidth" type="number">
-                    </div>
-                    <div>
-                        <label>세로 (cm)</label>
-                        <input id="editHeight" type="number">
-                    </div>
-                </div>
-                <label>회전 (도)</label>
-                <input id="editRotation" type="number" step="5" value="0">
-                <button onclick="applyEdit()">크기·회전 적용</button>
-                <div class="btn-row">
-                    <button class="secondary" onclick="rotateSelected(-90)">↺ 90°</button>
-                    <button class="secondary" onclick="rotateSelected(90)">↻ 90°</button>
-                </div>
-            </div>
-            <div id="editEmpty" class="info">
-                배치된 러그나 가구를 클릭하면<br>
-                크기와 회전을 편집할 수 있습니다.
-            </div>
-        </div>
-
-        <!-- ===== 분할 방식 ===== -->
-        <div class="section">
-            <h3>분할 방식</h3>
-            <div class="division-buttons">
-                <button id="equalBtn" class="secondary" onclick="setDivision('equal')">등분 분할</button>
-                <button id="optimalBtn" class="active" onclick="setDivision('optimal')">최적 분할</button>
-                <button id="maxBtn" class="secondary" onclick="setDivision('max')">최대 크기</button>
-            </div>
-        </div>
-
 
        <!-- ===== 견적 계산 ===== -->
         <div class="section">
@@ -1213,8 +1207,16 @@ button.active { background: #d99046; color: white; }
    화면 배율은 항상 캔버스 전체가 보이도록 자동 계산한다.
    ========================================================== */
 
-const CANVAS_W = 600;     // 배치 캔버스 가로 (cm)
-const CANVAS_H = 600;     // 배치 캔버스 세로 (cm)
+/* 배치 캔버스 = 거실 크기 (cm). 평형 선택에 따라 바뀐다. */
+let CANVAS_W = 350;       // 기본: 24-25평 거실 (3.5m)
+let CANVAS_H = 470;       // 기본: 24-25평 거실 (4.7m)
+
+/* 평형 프리셋 — 전용면적 → 거실 대략 크기 */
+const PYEONG_PRESETS = [
+    { label: "24-25평", area: "59㎡",  w: 350, h: 470 },
+    { label: "33-34평", area: "84㎡",  w: 400, h: 550 },
+    { label: "43-46평", area: "114㎡", w: 450, h: 600 }
+];
 
 let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배율
 let zoomFactor = 1;       // 사용자가 +/− 로 조절하는 배수
@@ -1222,7 +1224,7 @@ let scale = 1;            // 실제 px/cm
 
 let selectedObjects = [];    // 선택된 객체들 (클릭할 때마다 선택/해제)
 let selectedObject = null;   // 편집 패널이 보는 대표 = 마지막으로 누른 것
-let divisionMode = "optimal";
+let divisionMode = "equal";   /* 분할 방식은 등분 분할로 고정 */
 let objectCount = 0;
 
 const room = document.getElementById("room");
@@ -1242,24 +1244,26 @@ const FURNITURE_OPTIONS = {
     ]
 };
 
-/* 선택된 종류의 선택지 버튼을 그린다 */
-function changeFurniType() {
+/* 가구 종류(소파/침대) 탭을 누르면 하위 크기 옵션을 카드로 그린다 */
+function selectFurniType(type) {
 
-    const type = document.getElementById("furniType").value;
+    document.querySelectorAll(".furni-tab")
+        .forEach(b => b.classList.toggle("active", b.dataset.type === type));
+
     const box = document.getElementById("furniOptions");
-
     box.innerHTML = "";
 
     FURNITURE_OPTIONS[type].forEach(opt => {
 
-        const btn = document.createElement("button");
-        btn.innerHTML = opt.label +
-            "<span>" + opt.w + "×" + opt.h + "</span>";
-        btn.onclick = function () {
+        const card = document.createElement("button");
+        card.className = "furni-card";
+        card.innerHTML = '<span class="fc-name">' + opt.label + '</span>' +
+                         '<span class="fc-size">' + opt.w + '×' + opt.h + '</span>';
+        card.onclick = function () {
             addFurniture(type, opt.w, opt.h, opt.label);
         };
 
-        box.appendChild(btn);
+        box.appendChild(card);
     });
 }
 
@@ -1290,18 +1294,6 @@ function buildRugPresets() {
         card.className = "preset-card";
         card.onclick = function () { addRug(i); };
 
-        /* 카드 안 미리보기 도형 — 실제 비율을 유지해 최대 34px */
-        const ratio = preset.w / preset.h;
-        let pw, ph;
-        if (ratio >= 1) { pw = 34; ph = 34 / ratio; }
-        else { ph = 34; pw = 34 * ratio; }
-
-        const shape = document.createElement("div");
-        shape.className = "shape";
-        shape.style.width = pw + "px";
-        shape.style.height = ph + "px";
-        if (preset.shape === "round") shape.style.borderRadius = "50%";
-
         const nameEl = document.createElement("span");
         nameEl.className = "p-name";
         nameEl.innerText = preset.name;
@@ -1310,11 +1302,47 @@ function buildRugPresets() {
         sizeEl.className = "p-size";
         sizeEl.innerText = preset.w + "×" + preset.h;
 
-        card.appendChild(shape);
         card.appendChild(nameEl);
         card.appendChild(sizeEl);
         grid.appendChild(card);
     });
+}
+
+/* ---------- 평형 선택 ---------- */
+
+function buildPyeongButtons() {
+
+    const box = document.getElementById("pyeongButtons");
+
+    PYEONG_PRESETS.forEach((p, i) => {
+        const btn = document.createElement("button");
+        btn.className = "pyeong-btn" + (i === 0 ? " active" : "");
+        btn.innerHTML = p.label + "<span>" + p.area + "</span>";
+        btn.onclick = function () { applyPyeong(i); };
+        box.appendChild(btn);
+    });
+}
+
+/* 평형을 누르면 거실(캔버스) 크기가 바뀌고,
+   배치된 러그·가구는 실제 cm를 유지한 채 새 거실 비율에 맞게 다시 그려진다. */
+function applyPyeong(i) {
+
+    const p = PYEONG_PRESETS[i];
+    CANVAS_W = p.w;
+    CANVAS_H = p.h;
+
+    document.querySelectorAll(".pyeong-btn")
+        .forEach((b, j) => b.classList.toggle("active", j === i));
+
+    /* 새 거실 경계 안으로 위치 보정 */
+    document.querySelectorAll(".object").forEach(el => {
+        const pos = clampPosition(el, Number(el.dataset.x), Number(el.dataset.y));
+        el.dataset.x = pos.x;
+        el.dataset.y = pos.y;
+    });
+
+    fitToWorkspace();
+    refreshView();     /* 새 배율로 거실+객체 전부 다시 렌더 → 비율 자동 반영 */
 }
 
 
@@ -1645,34 +1673,11 @@ function clearSelection() {
     refreshSelectionUI();
 }
 
-/* 선택 표시·편집 패널·견적을 한꺼번에 갱신 */
+/* 선택 표시·견적을 한꺼번에 갱신 */
 function refreshSelectionUI() {
 
     document.querySelectorAll(".object")
         .forEach(o => o.classList.toggle("selected", isSelected(o)));
-
-    const panel = document.getElementById("editPanel");
-    const empty = document.getElementById("editEmpty");
-
-    if (!selectedObject) {
-        panel.classList.add("hidden");
-        empty.style.display = "block";
-    } else {
-        panel.classList.remove("hidden");
-        empty.style.display = "none";
-
-        document.getElementById("editTitle").innerText =
-            TYPE_NAMES[selectedObject.dataset.type] + " 편집";
-        document.getElementById("editWidth").value = selectedObject.dataset.w;
-        document.getElementById("editHeight").value = selectedObject.dataset.h;
-        document.getElementById("editRotation").value = selectedObject.dataset.rot;
-
-        /* 러그를 선택하면 그 러그의 분할 방식으로 버튼 갱신 */
-        if (selectedObject.dataset.type === "rug") {
-            divisionMode = selectedObject.dataset.division || divisionMode;
-            syncDivisionButtons(divisionMode);
-        }
-    }
 
     updateSelectionInfo();
     updateQuote();
@@ -1698,60 +1703,22 @@ function updateSelectionInfo() {
     info.innerHTML = "<strong>" + selectedObjects.length + "개</strong> 선택됨";
 }
 
-function applyEdit() {
-
-    if (!selectedObject) return;
-
-    const w = Number(document.getElementById("editWidth").value);
-    const h = Number(document.getElementById("editHeight").value);
-    const rot = Number(document.getElementById("editRotation").value);
-
-    if (w > 0) selectedObject.dataset.w = Math.min(w, CANVAS_W);
-    if (h > 0) selectedObject.dataset.h = Math.min(h, CANVAS_H);
-    selectedObject.dataset.rot = ((rot % 360) + 360) % 360;
-
-    const pos = clampPosition(
-        selectedObject,
-        Number(selectedObject.dataset.x),
-        Number(selectedObject.dataset.y)
-    );
-    selectedObject.dataset.x = pos.x;
-    selectedObject.dataset.y = pos.y;
-
-    renderObject(selectedObject);
-    selectObject(selectedObject);
-
-    updateQuote();
-}
-
-/* 편집 입력칸에서 Enter를 누르면 바로 적용 */
-["editWidth", "editHeight", "editRotation"].forEach(id => {
-    document.getElementById(id).addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            applyEdit();
-            this.blur();   /* 모바일에서 키보드 닫기 */
-        }
-    });
-});
-
+/* 선택한 러그(들)를 90°씩 회전 */
 function rotateSelected(deg) {
 
-    if (!selectedObject) return;
+    if (selectedObjects.length === 0) return;
 
-    const rot = (Number(selectedObject.dataset.rot) + deg + 360) % 360;
-    selectedObject.dataset.rot = rot;
-    document.getElementById("editRotation").value = rot;
+    selectedObjects.forEach(el => {
+        el.dataset.rot = (Number(el.dataset.rot) + deg + 360) % 360;
 
-    const pos = clampPosition(
-        selectedObject,
-        Number(selectedObject.dataset.x),
-        Number(selectedObject.dataset.y)
-    );
-    selectedObject.dataset.x = pos.x;
-    selectedObject.dataset.y = pos.y;
+        const pos = clampPosition(
+            el, Number(el.dataset.x), Number(el.dataset.y));
+        el.dataset.x = pos.x;
+        el.dataset.y = pos.y;
 
-    renderObject(selectedObject);
+        renderObject(el);
+    });
+
     updateSelectionInfo();
 }
 
@@ -1794,62 +1761,6 @@ window.addEventListener("resize", function () {
 
 
 /* ---------- 러그 분할 ---------- */
-
-// 변경 전
-function setDivision(mode) {
-
-    divisionMode = mode;
-
-    ["equalBtn", "optimalBtn", "maxBtn"].forEach(id => {
-        const b = document.getElementById(id);
-        b.classList.remove("active");
-        b.classList.add("secondary");
-    });
-
-    const activeId =
-        mode === "equal" ? "equalBtn" :
-        mode === "optimal" ? "optimalBtn" : "maxBtn";
-
-    document.getElementById(activeId).classList.add("active");
-    document.getElementById(activeId).classList.remove("secondary");
-
-    /* 배치된 모든 러그에 적용 */
-    room.querySelectorAll(".rug").forEach(renderRugPieces);
-    updateQuote();
-}
-
-// 변경 후
-function setDivision(mode) {
-
-    divisionMode = mode;   /* 다음에 추가할 러그의 기본값 */
-
-    syncDivisionButtons(mode);
-
-    /* 선택된 러그에만 적용 */
-    if (selectedObject && selectedObject.dataset.type === "rug") {
-        selectedObject.dataset.division = mode;
-        renderRugPieces(selectedObject);
-    }
-
-    updateQuote();
-}
-
-/* 버튼 활성 표시만 갱신 */
-function syncDivisionButtons(mode) {
-
-    ["equalBtn", "optimalBtn", "maxBtn"].forEach(id => {
-        const b = document.getElementById(id);
-        b.classList.remove("active");
-        b.classList.add("secondary");
-    });
-
-    const activeId =
-        mode === "equal" ? "equalBtn" :
-        mode === "optimal" ? "optimalBtn" : "maxBtn";
-
-    document.getElementById(activeId).classList.add("active");
-    document.getElementById(activeId).classList.remove("secondary");
-}
 
 function renderRugPieces(rug) {
 
@@ -2000,19 +1911,19 @@ function formatWon(n) {
    TODO: 실제 기성 판매가표를 받으면 PRESET_PRICES 를 채운다.
    값이 없는 항목은 맞춤 과금표(200×N 이하)로 임시 계산한다. */
 const PRESET_PRICES = {
-    // "거실XL": 273000,
-    // "거실L":  227500,
-    // "거실M":  136500,
-    // "거실S":  136500,
-    // "복도형":  227500,
-    // "모듈형":  182000,
-    // "주방용":  118300
+    "거실XL": 248000,
+    "거실L":  215000,
+    "거실M":  132000,
+    "거실S":   69000,
+    "복도형":  133000,
+    "모듈형":  116000,
+    "주방용":   47000
 };
 
 function presetPrice(rug) {
     const name = rug.dataset.presetName;
     if (PRESET_PRICES[name] != null) return PRESET_PRICES[name];
-    return panelPrice(Number(rug.dataset.h));   /* 임시 */
+    return panelPrice(Number(rug.dataset.h));   /* 표에 없는 경우 임시 */
 }
 
 /* 기성 러그 구역 — 금액 + 구매하러 가기 */
@@ -2046,7 +1957,7 @@ function presetQuoteSection(list) {
             '<span class="t-label">소계 · 총 ' + count + '장</span>' +
             '<span class="t-price">' + formatWon(subtotal) + '</span></div>';
 
-    html += '<button class="quote-cta cta-order" onclick="openPresetOrder()">구매하러 가기</button>';
+    html += '<button class="quote-cta cta-order" onclick="openPresetOrder()">주문하러 가기</button>';
     html += '</div>';
 
     return html;
@@ -2452,8 +2363,9 @@ function calcQuote() {
 
 /* ---------- 초기화 ---------- */
 
+buildPyeongButtons();
 buildRugPresets();
-changeFurniType();
+selectFurniType("sofa");
 fitToWorkspace();
 refreshView();
 addRug(3);
