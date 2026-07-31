@@ -233,7 +233,8 @@ body {
 }
 
 .section { margin-bottom: 26px; }
-.section h3 { margin: 50px 0px 14px; font-size: 16px; }
+.section h3 {     margin: 0px 0px 24px;
+    font-size: 16px; }
 
 label {
     display: block;
@@ -417,6 +418,12 @@ button.active { background: #d99046; color: white; }
     gap: 10px;
 }
 
+.toolbar-home {
+    margin-left: auto !important;      /* 남는 공간을 왼쪽에 몰아 항상 오른쪽 끝으로 */
+    background: transparent;
+    color: #8a6a4c;
+    font-size: 13px;
+}
 .toolbar button { width: auto; margin: 0; padding: 9px 15px; }
 
 .workspace {
@@ -1198,7 +1205,7 @@ button.active { background: #d99046; color: white; }
 
     <aside class="sidebar">
 
-     <button class="back-btn" onclick="showScreen('home')">← 처음으로</button>
+     <!-- <button class="back-btn" onclick="showScreen('home')">← 처음으로</button> -->
 
         <!-- ===== 평형 선택 ===== -->
         <div class="section">
@@ -1267,6 +1274,7 @@ button.active { background: #d99046; color: white; }
             <button onclick="zoomIn()">+</button>
             <button onclick="deleteSelected()">선택 삭제</button>
             <button class="secondary" onclick="clearAll()">전체 지우기</button>
+            <button class="toolbar-home" onclick="showScreen('home')">← 처음으로</button>
         </div>
 
         <div class="workspace">
