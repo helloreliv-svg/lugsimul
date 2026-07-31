@@ -766,7 +766,7 @@ button.active { background: #d99046; color: white; }
     margin: 0 auto 30px;
 }
 
-.diagram-row { display: flex; align-items: center; gap: 6px; }
+.diagram-row { position: relative; display: flex; }
 
 /* 가로·세로 실치수 표시 */
 .dim-top,
@@ -776,8 +776,18 @@ button.active { background: #d99046; color: white; }
     letter-spacing: -0.02em;
 }
 
-.dim-top { margin: 0 0 5px 28px; text-align: center; }
-.dim-side { width: 22px; text-align: right; }
+.dim-top { margin: 0 0 5px; text-align: center; }
+
+/* 세로 치수는 흐름에서 빼내 왼쪽에 띄운다.
+   자리를 차지하면 러그가 그만큼 오른쪽으로 밀려 보이기 때문. */
+.dim-side {
+    position: absolute;
+    right: 100%;
+    margin-right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+}
 
 .rug-diagram {
     position: relative;
