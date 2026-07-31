@@ -850,8 +850,20 @@ button.active { background: #d99046; color: white; }
     gap: 16px;
 }
 
-.og-row { display: inline-flex; align-items: flex-end; gap: 14px; }
-.og-field { text-align: left; }
+/* 좁아지면 입력칸이 줄어들고, 수량(X n)은 그대로 유지된다 */
+.og-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    width: 100%;
+    max-width: 406px;
+}
+
+.og-field {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: left;
+}
 
 .og-label {
     display: block;
@@ -862,7 +874,7 @@ button.active { background: #d99046; color: white; }
 }
 
 .og-box {
-    width: 175px;
+    width: 100%;
     padding: 13px 16px;
     border: 1px solid #ddd6c9;
     border-radius: 6px;
@@ -874,6 +886,8 @@ button.active { background: #d99046; color: white; }
 }
 
 .og-x {
+    flex: 0 0 auto;      /* 줄어들지 않음 */
+    white-space: nowrap; /* "X 1"이 두 줄로 쪼개지지 않게 */
     font-size: 18px;
     font-weight: bold;
     color: #544E3B;
