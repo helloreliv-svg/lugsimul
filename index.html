@@ -749,9 +749,26 @@ button.active { background: #d99046; color: white; }
 }
 
 /* 러그 도식 — 실제 러그 텍스처 위에 분할선만 점선으로 */
+.diagram-wrap {
+    width: fit-content;
+    margin: 0 auto 30px;
+}
+
+.diagram-row { display: flex; align-items: center; gap: 6px; }
+
+/* 가로·세로 실치수 표시 */
+.dim-top,
+.dim-side {
+    font-size: 11px;
+    color: #6F6C56;
+    letter-spacing: -0.02em;
+}
+
+.dim-top { margin: 0 0 5px 28px; text-align: center; }
+.dim-side { width: 22px; text-align: right; }
+
 .rug-diagram {
     position: relative;
-    margin: 0 auto 30px;
     background: url("images/lug.png") center/100% 100% no-repeat;
 }
 
@@ -775,6 +792,9 @@ button.active { background: #d99046; color: white; }
     font-size: 11px;
     font-weight: bold;
 }
+
+/* 칸이 좁아 치수가 넘칠 때는 번호만 표시 */
+.diagram-piece.narrow .dp-size { display: none; }
 
 .rc-lines { border-top: 1px solid #e4ddd0; padding-top: 14px; }
 
@@ -1993,14 +2013,30 @@ function buildDiagram(modeKey, W, H) {
 
     const layout = splitLayout(modeKey, W, H);
 
-    /* 시안과 동일한 고정 도식 박스 */
-    const dw = 300, dh = 220;
-
-    let html = '<div class="rug-diagram" style="width:' + dw +
-               'px;height:' + dh + 'px;">';
-
     const nCols = layout.cols.length;
     const nRows = layout.rows.length;
+
+    /* 실제 가로:세로 비율을 유지하되, 조각 라벨이 읽히도록 최소 크기는 보장 */
+    const MAX_W = 300, MAX_H = 250;
+    let dw, dh;
+
+    if (W / H >= MAX_W / MAX_H) {
+        dw = MAX_W;
+        dh = MAX_W * H / W;
+    } else {
+        dh = MAX_H;
+        dw = MAX_H * W / H;
+    }
+
+    dw = Math.round(Math.min(340, Math.max(dw, nCols * 52)));
+    dh = Math.round(Math.min(300, Math.max(dh, nRows * 34)));
+
+    let html = '<div class="diagram-wrap">' +
+               '<div class="dim-top">' + W + '</div>' +
+               '<div class="diagram-row">' +
+               '<div class="dim-side">' + H + '</div>' +
+               '<div class="rug-diagram" style="width:' + dw +
+               'px;height:' + dh + 'px;">';
 
     let index = 0, offsetY = 0;
 
@@ -2017,6 +2053,9 @@ function buildDiagram(modeKey, W, H) {
             if (ci < nCols - 1) cls += " div-r";
             if (ri < nRows - 1) cls += " div-b";
 
+            /* 칸이 좁으면 치수가 넘치므로 번호만 남긴다 (치수는 아래 목록에 있음) */
+            if ((cw / W) * dw < 46) cls += " narrow";
+
             html += '<div class="' + cls + '" style="left:' + (offsetX / W * 100) +
                     '%;top:' + (offsetY / H * 100) + '%;width:' + (cw / W * 100) +
                     '%;height:' + (rh / H * 100) + '%;">' + index +
@@ -2028,7 +2067,7 @@ function buildDiagram(modeKey, W, H) {
         offsetY += rh;
     });
 
-    html += '</div>';
+    html += '</div></div></div>';   /* rug-diagram / diagram-row / diagram-wrap */
     return html;
 }
 
