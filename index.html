@@ -98,6 +98,40 @@ body, button, input, select, textarea {
     line-height: 1.6;
 }
 
+/* 기성 / 제작 러그 구역 나누기 */
+.q-section + .q-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e0cfb8;
+}
+
+.q-section-title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.q-rug-title {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 12px 0 6px;
+}
+
+.q-order-guide {
+    margin: 14px 0 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.quote-cta {
+    width: 100%;
+    margin: 12px 0 0;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
 
 body {
     margin: 0;
@@ -1186,7 +1220,8 @@ let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배�
 let zoomFactor = 1;       // 사용자가 +/− 로 조절하는 배수
 let scale = 1;            // 실제 px/cm
 
-let selectedObject = null;
+let selectedObjects = [];    // 선택된 객체들 (클릭할 때마다 선택/해제)
+let selectedObject = null;   // 편집 패널이 보는 대표 = 마지막으로 누른 것
 let divisionMode = "optimal";
 let objectCount = 0;
 
@@ -1336,6 +1371,8 @@ function addRug(presetIndex) {
 
     const el = createObject("rug", "", p.w, p.h, x, y);
     // el.dataset.shape = p.shape;
+    el.dataset.kind = "preset";          /* 기성 러그 */
+    el.dataset.presetName = p.name;
     el.dataset.division = divisionMode;
     if (p.shape === "round") el.classList.add("round");
 
@@ -1367,6 +1404,7 @@ function addCustomRug() {
 
     const el = createObject("rug", "", w, h, x, y);
     el.dataset.shape = "rect";
+    el.dataset.kind = "custom";          /* 맞춤 제작 러그 */
     el.dataset.division = divisionMode;
     el.querySelector(".size-label").classList.add("rug-size-label");
 
@@ -1522,14 +1560,28 @@ function makeDraggable(el) {
     el.addEventListener("pointerdown", function (e) {
 
         e.preventDefault();
-        selectObject(el);
+
+        /* 아직 선택 안 된 것은 바로 선택에 추가.
+           이미 선택된 것은 "끌지 않고 클릭만" 했을 때 해제한다. */
+        const wasSelected = isSelected(el);
+
+        if (!wasSelected) {
+            toggleSelection(el);
+        } else {
+            selectedObject = el;
+            refreshSelectionUI();
+        }
 
         const startMouseX = e.clientX;
         const startMouseY = e.clientY;
         const startX = Number(el.dataset.x);
         const startY = Number(el.dataset.y);
+        let dragged = false;
 
         function move(ev) {
+            if (Math.abs(ev.clientX - startMouseX) > 3 ||
+                Math.abs(ev.clientY - startMouseY) > 3) dragged = true;
+
             const dxCm = (ev.clientX - startMouseX) / scale;
             const dyCm = (ev.clientY - startMouseY) / scale;
 
@@ -1542,6 +1594,8 @@ function makeDraggable(el) {
         function stop() {
             document.removeEventListener("pointermove", move);
             document.removeEventListener("pointerup", stop);
+
+            if (!dragged && wasSelected) toggleSelection(el);   /* 선택 해제 */
         }
 
         document.addEventListener("pointermove", move);
@@ -1560,60 +1614,88 @@ document.querySelector(".workspace").addEventListener("pointerdown", function (e
 
 /* ---------- 선택 / 편집 패널 ---------- */
 
+function isSelected(el) { return selectedObjects.indexOf(el) !== -1; }
+
+/* 단독 선택 — 러그·가구를 새로 추가한 직후 등 */
 function selectObject(el) {
-
+    selectedObjects = [el];
     selectedObject = el;
+    refreshSelectionUI();
+}
 
-    document.querySelectorAll(".object")
-        .forEach(o => o.classList.remove("selected"));
-    el.classList.add("selected");
+/* 클릭 토글 — 이미 선택돼 있으면 해제, 아니면 선택에 추가 */
+function toggleSelection(el) {
 
-    document.getElementById("editPanel").classList.remove("hidden");
-    document.getElementById("editEmpty").style.display = "none";
+    const i = selectedObjects.indexOf(el);
 
-    document.getElementById("editTitle").innerText =
-        TYPE_NAMES[el.dataset.type] + " 편집";
-    document.getElementById("editWidth").value = el.dataset.w;
-    document.getElementById("editHeight").value = el.dataset.h;
-    // document.getElementById("editRotation").value = el.dataset.rot;
-       /* 러그를 선택하면 그 러그의 분할 방식으로 버튼 갱신 */
-    if (el.dataset.type === "rug") {
-        divisionMode = el.dataset.division || divisionMode;
-        syncDivisionButtons(divisionMode);
+    if (i === -1) {
+        selectedObjects.push(el);
+        selectedObject = el;
+    } else {
+        selectedObjects.splice(i, 1);
+        selectedObject = selectedObjects[selectedObjects.length - 1] || null;
     }
 
-    // if (window.innerWidth < 768) {
-    //     document.getElementById("editPanel")
-    //         .scrollIntoView({ behavior: "smooth", block: "nearest" });
-    // }
-
-    updateSelectionInfo();
+    refreshSelectionUI();
 }
 
 function clearSelection() {
-
+    selectedObjects = [];
     selectedObject = null;
-    document.querySelectorAll(".object")
-        .forEach(o => o.classList.remove("selected"));
+    refreshSelectionUI();
+}
 
-    document.getElementById("editPanel").classList.add("hidden");
-    document.getElementById("editEmpty").style.display = "block";
+/* 선택 표시·편집 패널·견적을 한꺼번에 갱신 */
+function refreshSelectionUI() {
+
+    document.querySelectorAll(".object")
+        .forEach(o => o.classList.toggle("selected", isSelected(o)));
+
+    const panel = document.getElementById("editPanel");
+    const empty = document.getElementById("editEmpty");
+
+    if (!selectedObject) {
+        panel.classList.add("hidden");
+        empty.style.display = "block";
+    } else {
+        panel.classList.remove("hidden");
+        empty.style.display = "none";
+
+        document.getElementById("editTitle").innerText =
+            TYPE_NAMES[selectedObject.dataset.type] + " 편집";
+        document.getElementById("editWidth").value = selectedObject.dataset.w;
+        document.getElementById("editHeight").value = selectedObject.dataset.h;
+        document.getElementById("editRotation").value = selectedObject.dataset.rot;
+
+        /* 러그를 선택하면 그 러그의 분할 방식으로 버튼 갱신 */
+        if (selectedObject.dataset.type === "rug") {
+            divisionMode = selectedObject.dataset.division || divisionMode;
+            syncDivisionButtons(divisionMode);
+        }
+    }
+
     updateSelectionInfo();
+    updateQuote();
 }
 
 function updateSelectionInfo() {
 
     const info = document.getElementById("selectionInfo");
 
-    if (!selectedObject) {
+    if (selectedObjects.length === 0) {
         info.innerText = "선택된 항목 없음";
         return;
     }
 
-    const el = selectedObject;
-    info.innerHTML =
-        "<strong>" + TYPE_NAMES[el.dataset.type] + "</strong> 선택됨<br>" +
-        el.dataset.w + " × " + el.dataset.h + " cm / " + el.dataset.rot + "°";
+    if (selectedObjects.length === 1) {
+        const el = selectedObjects[0];
+        info.innerHTML =
+            "<strong>" + TYPE_NAMES[el.dataset.type] + "</strong> 선택됨<br>" +
+            el.dataset.w + " × " + el.dataset.h + " cm / " + el.dataset.rot + "°";
+        return;
+    }
+
+    info.innerHTML = "<strong>" + selectedObjects.length + "개</strong> 선택됨";
 }
 
 function applyEdit() {
@@ -1823,11 +1905,10 @@ function renderRugPieces(rug) {
 // 변경 후
 function deleteSelected() {
 
-    if (!selectedObject) return;
+    if (selectedObjects.length === 0) return;
 
-    selectedObject.remove();
+    selectedObjects.forEach(o => o.remove());
     clearSelection();
-    updateQuote();
 }
 
 function clearAll() {
@@ -1915,33 +1996,76 @@ function formatWon(n) {
 }
 
 /* 견적 계산 및 표시 */
-function updateQuote() {
+/* ---------- 기성 러그 금액 ----------
+   TODO: 실제 기성 판매가표를 받으면 PRESET_PRICES 를 채운다.
+   값이 없는 항목은 맞춤 과금표(200×N 이하)로 임시 계산한다. */
+const PRESET_PRICES = {
+    // "거실XL": 273000,
+    // "거실L":  227500,
+    // "거실M":  136500,
+    // "거실S":  136500,
+    // "복도형":  227500,
+    // "모듈형":  182000,
+    // "주방용":  118300
+};
 
-    const box = document.getElementById("quoteBox");
-    const rugs = room.querySelectorAll(".rug");
+function presetPrice(rug) {
+    const name = rug.dataset.presetName;
+    if (PRESET_PRICES[name] != null) return PRESET_PRICES[name];
+    return panelPrice(Number(rug.dataset.h));   /* 임시 */
+}
 
-    if (rugs.length === 0) {
-        box.innerHTML = '<div class="quote-empty">러그를 선택하면 견적이 계산됩니다.</div>';
-        return;
-    }
+/* 기성 러그 구역 — 금액 + 구매하러 가기 */
+function presetQuoteSection(list) {
 
-    let html = "";
-    let grandTotal = 0;
-    let grandPanels = 0;
+    const groups = {};
+    let subtotal = 0, count = 0;
 
-    rugs.forEach((rug, idx) => {
+    list.forEach(rug => {
+        const name = rug.dataset.presetName || "기성 러그";
+        const size = rug.dataset.w + "×" + rug.dataset.h;
+        const price = presetPrice(rug);
+        const key = name + "|" + size;
+
+        if (!groups[key]) groups[key] = { name: name, size: size, price: price, count: 0 };
+        groups[key].count++;
+        subtotal += price;
+        count++;
+    });
+
+    let html = '<div class="q-section"><div class="q-section-title">기성 러그</div>';
+
+    Object.keys(groups).forEach(key => {
+        const g = groups[key];
+        html += '<div class="quote-line">' +
+                '<span class="q-label">' + g.name + ' ' + g.size + ' × ' + g.count + '장</span>' +
+                '<span class="q-price">' + formatWon(g.price * g.count) + '</span></div>';
+    });
+
+    html += '<div class="quote-total">' +
+            '<span class="t-label">소계 · 총 ' + count + '장</span>' +
+            '<span class="t-price">' + formatWon(subtotal) + '</span></div>';
+
+    html += '<button class="quote-cta cta-order" onclick="openPresetOrder()">구매하러 가기</button>';
+    html += '</div>';
+
+    return html;
+}
+
+/* 맞춤 제작 러그 구역 — 견적 + 주문 옵션 안내 + 맞춤 제작 주문하기 */
+function customQuoteSection(list) {
+
+    let html = '<div class="q-section"><div class="q-section-title">제작 러그</div>';
+    let grandTotal = 0, grandPanels = 0;
+    const tiers = {};
+
+    list.forEach((rug, idx) => {
 
         const W = Number(rug.dataset.w);
         const H = Number(rug.dataset.h);
-
-        // const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
-        // const layout = splitLayout(divisionMode, W, H);
         const fitsOne = (W <= ROLL_WIDTH && H <= MAX_LENGTH);
-        const rugMode = rug.dataset.division || divisionMode;
-        const layout = splitLayout(rugMode, W, H);
+        const layout = splitLayout(rug.dataset.division || divisionMode, W, H);
 
-
-        /* 같은 규격끼리 묶어서 집계 */
         const groups = {};
         let subtotal = 0, panelCount = 0;
 
@@ -1953,48 +2077,70 @@ function updateQuote() {
                 groups[key].count++;
                 subtotal += price;
                 panelCount++;
+
+                const t = optionTier(rh);
+                tiers[t] = (tiers[t] || 0) + 1;
             });
         });
 
         grandTotal += subtotal;
         grandPanels += panelCount;
 
-        /* 러그가 여러 개일 때만 번호 표시 */
-        if (rugs.length > 1) {
-            html += '<div style="font-weight:bold;margin:' +
-                    (idx === 0 ? '0' : '14px') + ' 0 8px;">러그 ' +
-                    (idx + 1) + ' — ' + W + '×' + H + '</div>';
+        if (list.length > 1) {
+            html += '<div class="q-rug-title">러그 ' + (idx + 1) +
+                    ' — ' + W + '×' + H + '</div>';
         }
 
-        if (fitsOne) {
-            html += '<span class="quote-badge single">● 1장으로 제작 가능</span>';
-            html += '<div class="quote-note">' + W + '×' + H + 'cm는 최대 제작 사이즈(' +
-                    ROLL_WIDTH + '×' + MAX_LENGTH + 'cm) 안이라 이음선 없이 한 장으로 나와요.</div>';
-        } else {
-            html += '<span class="quote-badge multi">● 분할 제작 필요</span>';
-            html += '<div class="quote-note"><b>' + W + '×' + H +
-                    'cm</b>는 최대 제작 사이즈를 초과해 <b>' + panelCount +
-                    '장</b>으로 나뉘어요. (배치 ' + layout.cols.length +
-                    '×' + layout.rows.length + ')</div>';
-        }
+        html += fitsOne
+            ? '<span class="quote-badge single">● 1장으로 제작 가능</span>'
+            : '<span class="quote-badge multi">● ' + panelCount + '장으로 분할 제작</span>';
 
         Object.keys(groups).forEach(key => {
             const g = groups[key];
             html += '<div class="quote-line">' +
                     '<span class="q-label">' + key + 'cm × ' + g.count + '장</span>' +
-                    '<span class="q-price">' + formatWon(g.price * g.count) + '</span>' +
-                    '</div>';
+                    '<span class="q-price">' + formatWon(g.price * g.count) + '</span></div>';
         });
     });
 
     html += '<div class="quote-total">' +
-            '<span class="t-label">예상 견적 · 총 ' + grandPanels + '장</span>' +
-            '<span class="t-price">' + formatWon(grandTotal) + '</span>' +
-            '</div>';
+            '<span class="t-label">소계 · 총 ' + grandPanels + '장</span>' +
+            '<span class="t-price">' + formatWon(grandTotal) + '</span></div>';
 
-    html += '<div class="quote-sub">최대 단일 제작 사이즈는 ' + ROLL_WIDTH + '×' +
-            MAX_LENGTH + 'cm예요. 길이는 10cm 단위로 올려서 계산되며, ' +
-            '분할 방식에 따라 합계 금액이 달라질 수 있습니다.</div>';
+    html += '<div class="q-order-guide">주문 시 아래와 같이 선택해 주세요</div>';
+
+    Object.keys(tiers).sort((a, b) => a - b).forEach(t => {
+        html += '<div class="quote-line">' +
+                '<span class="q-label">200×' + t + ' 이하</span>' +
+                '<span class="q-price">수량 ' + tiers[t] + '</span></div>';
+    });
+
+    html += '<button class="quote-cta cta-order" onclick="openOrder()">맞춤 제작 주문하기</button>';
+    html += '</div>';
+
+    return html;
+}
+
+/* 선택한 러그만 견적에 반영한다 */
+function updateQuote() {
+
+    const box = document.getElementById("quoteBox");
+    const rugs = selectedObjects.filter(o => o.dataset.type === "rug");
+
+    if (rugs.length === 0) {
+        box.innerHTML = '<div class="quote-empty">러그를 클릭하면 견적이 계산됩니다.<br>' +
+                        '여러 개를 눌러 함께 볼 수 있어요.</div>';
+        return;
+    }
+
+    const presets = rugs.filter(r => r.dataset.kind === "preset");
+    const customs = rugs.filter(r => r.dataset.kind !== "preset");
+
+    let html = "";
+    if (presets.length) html += presetQuoteSection(presets);
+    if (customs.length) html += customQuoteSection(customs);
+
+    html += '<button class="quote-cta cta-kakao" onclick="openKakao()">카카오톡 상담하기</button>';
 
     box.innerHTML = html;
 }
@@ -2190,8 +2336,19 @@ function selectQuoteMode(idx) {
 const KAKAO_CHAT_URL = "https://accounts.kakao.com/login/?continue=https%3A%2F%2Fpf.kakao.com%2F_xnixiAxb%2Fchat%3Fapi_ver%3D1.1%26kakao_agent%3Dsdk%252F1.44.0%2520os%252Fjavascript%2520sdk_type%252Fjavascript%2520lang%252Fko%2520device%252FWin32%2520origin%252Fhttps%25253A%25252F%25252Freliv.co.kr%26app_key%3D6cdbe7a83ae2b42151a0020f7f7242b7%26referer%3Dhttps%253A%252F%252Freliv.co.kr%252Fshop_view%252F%253Fidx%253D99#login";
 const ORDER_URL = "https://reliv.co.kr/shop_view/?idx=121";
 
+/* TODO: 기성러그(3세대 제품) 랜딩 주소를 받으면 채운다 */
+const PRESET_ORDER_URL = "";
+
 function openKakao() { window.open(KAKAO_CHAT_URL, "_blank", "noopener"); }
 function openOrder() { window.open(ORDER_URL, "_blank", "noopener"); }
+
+function openPresetOrder() {
+    if (!PRESET_ORDER_URL) {
+        alert("기성러그 제품 페이지 주소가 아직 연결되지 않았습니다.");
+        return;
+    }
+    window.open(PRESET_ORDER_URL, "_blank", "noopener");
+}
 
 function calcQuote() {
 
