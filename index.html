@@ -45,10 +45,10 @@ body, button, input, select, textarea {
 
 /* ---------- 견적 ---------- */
 .quote-box {
-    background: #fbf6ef;
-    border: 1px solid #e8d9c5;
+       /* background: #fbf6ef; */
+    /* border: 1px solid #e8d9c5; */
     border-radius: 10px;
-    padding: 14px;
+    /* padding: 14px; */
     font-size: 13px;
 }
 
@@ -89,7 +89,7 @@ body, button, input, select, textarea {
 }
 
 .quote-total .t-label { font-size: 13px; }
-.quote-total .t-price { font-size: 19px; font-weight: bold; color: #754820; }
+.quote-total .t-price { font-size: 19px; font-weight: bold; color: #544E3B; }
 
 .quote-sub {
     margin-top: 8px;
@@ -106,32 +106,106 @@ body, button, input, select, textarea {
 }
 
 .q-section-title {
-    font-size: 13px;
+    font-size: 14px;
+    /* font-weight: bold; */
+    margin-bottom: 10px;
+    margin-top: 20px;
+}
+
+/* ===== 사이드바 견적 — 견적페이지 톤으로 통일 (이미지 1·2) ===== */
+.q-sub-head {
+    font-size: 14px;
     font-weight: bold;
+    color: #544E3B;
+    margin-bottom: 12px;
+}
+
+/* 금액 줄 — 크게, 점선 없이 여백으로 구분 */
+.q-money-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+    font-size: 14px;
+    color: #6F6C56;
+}
+.q-money-line .q-price { font-variant-numeric: tabular-nums; }
+
+/* 총 금액 — 실선 구분 + 강조 */
+.q-grand {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid #e4ddd0;
+    font-size: 14px;
+    color: #544E3B;
+}
+.q-grand .q-grand-price { font-size: 20px; font-weight: bold; }
+
+/* 제작 뱃지 */
+.q-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+.q-badge.single { background: #e6f0e2; color: #3f6b34; }
+.q-badge.multi  { background: #f6e2d8; color: #9a4a24; }
+
+/* 사이즈 옵션 안내 — 박스형 (이미지 2·3) */
+.q-guide-title {
+    font-size: 13px;
+    color: #6F6C56;
+    margin: 20px 0 10px;
+}
+.q-size-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
     margin-bottom: 10px;
 }
-
-.q-rug-title {
+.q-size-field { flex: 1 1 0; min-width: 0; }
+.q-size-label {
+    display: block;
     font-size: 12px;
-    font-weight: bold;
-    margin: 12px 0 6px;
+    color: #544E3B;
+    margin-bottom: 6px;
 }
-
-.q-order-guide {
-    margin: 14px 0 4px;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-.quote-cta {
+.q-size-box {
     width: 100%;
-    margin: 12px 0 0;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 11px 12px;
+    border: 1px solid #ddd6c9;
+    border-radius: 6px;
+    background: #fff;
     font-size: 13px;
+    color: #544E3B;
+}
+.q-size-x {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 15px;
     font-weight: bold;
+    color: #544E3B;
+    padding-bottom: 11px;
 }
 
+/* CTA 버튼 — 간격 넉넉하게 */
+.q-cta {
+        width: 100%;
+    margin-top: 12px;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.q-cta.order { background: #544E3B; color: #fff; }
+.q-cta.kakao { background: #FEE500; color: #3C1E1E; }
 
 body {
     margin: 0;
@@ -144,7 +218,7 @@ body {
 
 /* ---------- 왼쪽 패널 ---------- */
 .sidebar {
-    width: 330px;
+    width: 400px;
     background: #fff;
     padding: 24px;
     border-right: 1px solid #e8e0d6;
@@ -159,7 +233,7 @@ body {
 }
 
 .section { margin-bottom: 26px; }
-.section h3 { margin: 0 0 14px; font-size: 16px; }
+.section h3 { margin: 50px 0px 14px; font-size: 16px; }
 
 label {
     display: block;
@@ -187,7 +261,7 @@ button {
     margin-bottom: 8px;
     cursor: pointer;
     font-size: 14px;
-    background: #754820;
+    background: #544E3B;
     color: white;
     /* font-family: inherit; */
 }
@@ -253,7 +327,7 @@ button.active { background: #d99046; color: white; }
 
 .pyeong-btn span { font-size: 11px; font-weight: normal; opacity: 0.7; }
 .pyeong-btn:hover { background: #f3e6d5; }
-.pyeong-btn.active { background: #754820; color: #fff; border-color: #754820; }
+.pyeong-btn.active { background: #544E3B; color: #fff; border-color: #544E3B; }
 .pyeong-btn.active span { opacity: 0.85; }
 
 /* ---------- 가구 탭 + 하위 크기 카드 ---------- */
@@ -271,7 +345,7 @@ button.active { background: #d99046; color: white; }
     font-size: 14px;
 }
 
-.furni-tab.active { background: #754820; color: #fff; }
+.furni-tab.active { background: #544E3B; color: #fff; }
 
 .furni-options {
     display: none;
@@ -308,8 +382,8 @@ button.active { background: #d99046; color: white; }
     width: auto;
     margin-bottom: 0;
     padding: 0 14px;
-    background: #eee7df;
-    color: #684326;
+    background: #ABA88E;
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -345,8 +419,15 @@ button.active { background: #d99046; color: white; }
 
 .toolbar button { width: auto; margin: 0; padding: 9px 15px; }
 
-.workspace { flex: 1; overflow: auto; padding: 40px; }
-
+.workspace {
+    flex: 1;              /* main 안에서 남는 세로를 차지 (더 늘어나지 않음) */
+    min-height: 0;        /* flex 자식이 넘칠 때 스크롤되도록 */
+    overflow: auto;       /* 큰 평형은 스크롤로 */
+    padding: 40px;
+    display: flex;
+    align-items: flex-start;   /* center 대신 위 정렬 (넘칠 때 잘림 방지) */
+    justify-content: center;
+}
 /* ---------- 방 (배치 캔버스) ---------- */
 .room {
     /* position: relative;
@@ -1117,11 +1198,11 @@ button.active { background: #d99046; color: white; }
 
     <aside class="sidebar">
 
-       <div class="logo" onclick="showScreen('home')" title="처음으로"><img src="images/logo.png" alt="reliv"></div>
+     <button class="back-btn" onclick="showScreen('home')">← 처음으로</button>
 
         <!-- ===== 평형 선택 ===== -->
         <div class="section">
-            <h3>평형 선택</h3>
+            <h3>평형 (거실기준)</h3>
             <div class="pyeong-buttons" id="pyeongButtons"></div>
         </div>
 
@@ -1129,9 +1210,10 @@ button.active { background: #d99046; color: white; }
             <h3>가구</h3>
 
        <div class="furni-group open">
-            <div class="furni-tabs">
+           <div class="furni-tabs">
                 <button class="furni-tab active" data-type="sofa" onclick="selectFurniType('sofa')">소파</button>
                 <button class="furni-tab" data-type="bed" onclick="selectFurniType('bed')">침대</button>
+                <button class="furni-tab" data-type="table" onclick="selectFurniType('table')">테이블</button>
             </div>
             <div class="furni-options" id="furniOptions"></div>
         </div>
@@ -1241,6 +1323,11 @@ const FURNITURE_OPTIONS = {
     bed: [
         { label: "싱글", w: 100, h: 200 },
         { label: "퀸",   w: 150, h: 200 }
+    ],
+    table: [
+        { label: "소형", w: 100, h: 60 },
+        { label: "중형", w: 120, h: 70 },
+        { label: "대형", w: 150, h: 90 }
     ]
 };
 
@@ -1341,8 +1428,9 @@ function applyPyeong(i) {
         el.dataset.y = pos.y;
     });
 
+    zoomFactor = 1;    /* ← 평형을 바꾸면 줌을 100%로 초기화 */
     fitToWorkspace();
-    refreshView();     /* 새 배율로 거실+객체 전부 다시 렌더 → 비율 자동 반영 */
+    refreshView();
 }
 
 
@@ -1725,6 +1813,12 @@ function rotateSelected(deg) {
 
 /* ---------- 화면 배율 (자동 맞춤) ---------- */
 
+/* 배율은 "가장 큰 평형"을 기준으로 한 번만 정한다.
+   → 어떤 평형을 눌러도 가구·러그의 화면상 크기는 그대로이고,
+     방(캔버스)만 커지거나 작아져서 유저가 크기를 가늠할 수 있다. */
+/* 배율은 "가장 큰 평형"을 기준으로 한 번만 정한다.
+   → 어떤 평형을 눌러도 가구·러그의 화면상 크기는 그대로이고,
+     방(캔버스)만 커지거나 작아져서 유저가 크기를 가늠할 수 있다. */
 function fitToWorkspace() {
 
     const workspace = document.querySelector(".workspace");
@@ -1736,9 +1830,20 @@ function fitToWorkspace() {
     const availW = Math.max(workspace.clientWidth - padW, 150);
     const availH = Math.max(workspace.clientHeight - padH, 150);
 
-    baseScale = Math.min(availW / CANVAS_W, availH / CANVAS_H);
-}
+    /* 모든 평형 프리셋 중 최대 크기를 기준으로 배율 고정 */
+    const maxW = Math.max(...PYEONG_PRESETS.map(p => p.w));
+    const maxH = Math.max(...PYEONG_PRESETS.map(p => p.h));
 
+    if (isMobile) {
+        /* 모바일: 화면이 좁으니 가로·세로 모두 안에 들어오게 맞춘다 */
+        baseScale = Math.min(availW / maxW, availH / maxH);
+    } else {
+        /* PC: 가로 여유가 넉넉하므로 가로 기준으로만 배율을 잡고,
+           세로로 넘치는 큰 평형은 스크롤(overflow:auto)로 처리한다.
+           단, 방이 지나치게 커지지 않게 상한을 둔다. */
+        baseScale = Math.min(availW / maxW, availH / maxH * 1);
+    }
+}
 function refreshView() {
 
     scale = baseScale * zoomFactor;
@@ -1926,11 +2031,11 @@ function presetPrice(rug) {
     return panelPrice(Number(rug.dataset.h));   /* 표에 없는 경우 임시 */
 }
 
-/* 기성 러그 구역 — 금액 + 구매하러 가기 */
+//* 기성 러그 — 금액 소제목 + 총 금액 + 구매하러 가기 → 카카오톡 (이미지 1) */
 function presetQuoteSection(list) {
 
     const groups = {};
-    let subtotal = 0, count = 0;
+    let subtotal = 0;
 
     list.forEach(rug => {
         const name = rug.dataset.presetName || "기성 러그";
@@ -1941,34 +2046,36 @@ function presetQuoteSection(list) {
         if (!groups[key]) groups[key] = { name: name, size: size, price: price, count: 0 };
         groups[key].count++;
         subtotal += price;
-        count++;
     });
 
     let html = '<div class="q-section"><div class="q-section-title">기성 러그</div>';
 
+    html += '<div class="q-sub-head">금액</div>';
+
     Object.keys(groups).forEach(key => {
         const g = groups[key];
-        html += '<div class="quote-line">' +
-                '<span class="q-label">' + g.name + ' ' + g.size + ' × ' + g.count + '장</span>' +
+        html += '<div class="q-money-line">' +
+                '<span>' + g.name + ' × ' + g.count + '장</span>' +
                 '<span class="q-price">' + formatWon(g.price * g.count) + '</span></div>';
     });
 
-    html += '<div class="quote-total">' +
-            '<span class="t-label">소계 · 총 ' + count + '장</span>' +
-            '<span class="t-price">' + formatWon(subtotal) + '</span></div>';
+    html += '<div class="q-grand">' +
+            '<span>총 금액</span>' +
+            '<span class="q-grand-price">' + formatWon(subtotal) + '</span></div>';
 
-    html += '<button class="quote-cta cta-order" onclick="openPresetOrder()">주문하러 가기</button>';
+    html += '<button class="q-cta order" onclick="openPresetOrder()">구매하러 가기</button>';
+    // html += '<button class="q-cta kakao" onclick="openKakao()">카카오톡 상담하기</button>';
     html += '</div>';
 
     return html;
 }
-
-/* 맞춤 제작 러그 구역 — 견적 + 주문 옵션 안내 + 맞춤 제작 주문하기 */
+/* 맞춤 제작 러그 구역 — 제작 뱃지 + 총 금액 + 사이즈/옵션 안내 + 맞춤 제작 주문하기 → 카카오톡 */
+/* 제작 러그 — 뱃지 + 금액 + 총 금액 + 박스형 사이즈 안내 + 주문 → 카카오톡 (이미지 2) */
 function customQuoteSection(list) {
 
     let html = '<div class="q-section"><div class="q-section-title">제작 러그</div>';
-    let grandTotal = 0, grandPanels = 0;
-    const tiers = {};
+    let grandTotal = 0;
+    const tiers = {};      /* optionTier → { w, count } */
 
     list.forEach((rug, idx) => {
 
@@ -1978,7 +2085,7 @@ function customQuoteSection(list) {
         const layout = splitLayout(rug.dataset.division || divisionMode, W, H);
 
         const groups = {};
-        let subtotal = 0, panelCount = 0;
+        let panelCount = 0;
 
         layout.cols.forEach(cw => {
             layout.rows.forEach(rh => {
@@ -1986,47 +2093,50 @@ function customQuoteSection(list) {
                 const price = panelPrice(rh);
                 if (!groups[key]) groups[key] = { count: 0, price: price };
                 groups[key].count++;
-                subtotal += price;
+                grandTotal += price;
                 panelCount++;
 
                 const t = optionTier(rh);
-                tiers[t] = (tiers[t] || 0) + 1;
+                if (!tiers[t]) tiers[t] = { count: 0 };
+                tiers[t].count++;
             });
         });
 
-        grandTotal += subtotal;
-        grandPanels += panelCount;
-
         if (list.length > 1) {
-            html += '<div class="q-rug-title">러그 ' + (idx + 1) +
-                    ' — ' + W + '×' + H + '</div>';
+            html += '<div class="q-rug-title">러그 ' + (idx + 1) + ' — ' + W + '×' + H + '</div>';
         }
 
         html += fitsOne
-            ? '<span class="quote-badge single">● 1장으로 제작 가능</span>'
-            : '<span class="quote-badge multi">● ' + panelCount + '장으로 분할 제작</span>';
+            ? '<span class="q-badge single">● 1장으로 제작 가능</span>'
+            : '<span class="q-badge multi">● ' + panelCount + '장으로 분할 제작</span>';
 
         Object.keys(groups).forEach(key => {
             const g = groups[key];
-            html += '<div class="quote-line">' +
-                    '<span class="q-label">' + key + 'cm × ' + g.count + '장</span>' +
+            html += '<div class="q-money-line">' +
+                    '<span>' + key + 'cm × ' + g.count + '장</span>' +
                     '<span class="q-price">' + formatWon(g.price * g.count) + '</span></div>';
         });
     });
 
-    html += '<div class="quote-total">' +
-            '<span class="t-label">소계 · 총 ' + grandPanels + '장</span>' +
-            '<span class="t-price">' + formatWon(grandTotal) + '</span></div>';
+    html += '<div class="q-grand">' +
+            '<span>총 금액</span>' +
+            '<span class="q-grand-price">' + formatWon(grandTotal) + '</span></div>';
 
-    html += '<div class="q-order-guide">주문 시 아래와 같이 선택해 주세요</div>';
+    /* 박스형 사이즈 안내 — 폭이 좁으니 사이즈 박스는 한 줄, X n은 오른쪽 */
+    html += '<div class="q-guide-title">상세페이지에서 주문 시 아래와 같이 선택해 주세요.</div>';
 
     Object.keys(tiers).sort((a, b) => a - b).forEach(t => {
-        html += '<div class="quote-line">' +
-                '<span class="q-label">200×' + t + ' 이하</span>' +
-                '<span class="q-price">수량 ' + tiers[t] + '</span></div>';
+        html += '<div class="q-size-row">' +
+                '<div class="q-size-field">' +
+                    '<label class="q-size-label">사이즈 *</label>' +
+                    '<div class="q-size-box">200×' + t + ' 이하</div>' +
+                '</div>' +
+                '<div class="q-size-x">X ' + tiers[t].count + '</div>' +
+            '</div>';
     });
 
-    html += '<button class="quote-cta cta-order" onclick="openOrder()">맞춤 제작 주문하기</button>';
+    html += '<button class="q-cta order" onclick="openOrder()">맞춤 제작 주문하기</button>';
+    // html += '<button class="q-cta kakao" onclick="openKakao()">카카오톡 상담하기</button>';
     html += '</div>';
 
     return html;
@@ -2051,8 +2161,10 @@ function updateQuote() {
     if (presets.length) html += presetQuoteSection(presets);
     if (customs.length) html += customQuoteSection(customs);
 
-    html += '<button class="quote-cta cta-kakao" onclick="openKakao()">카카오톡 상담하기</button>';
-
+    // html += '<button class="quote-cta cta-kakao" onclick="openKakao()">카카오톡 상담하기</button>';
+    if (presets.length || customs.length) {
+            html += '<button class="q-cta kakao" onclick="openKakao()">카카오톡 상담하기</button>';
+        }
     box.innerHTML = html;
 }
 
