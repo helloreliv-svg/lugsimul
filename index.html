@@ -214,7 +214,7 @@ body {
     color: #544E3B;
 }
 
-.app { display: flex; height: 100vh; }
+.app { display: flex; height: 100vh;overflow: hidden; }
 
 /* ---------- 왼쪽 패널 ---------- */
 .sidebar {
@@ -586,7 +586,7 @@ button.active { background: #d99046; color: white; }
 
     .app { flex-direction: column; height: 100dvh; }
 
-    .main { order: 1; min-height: 0; flex:none;}
+    .main { order: 1; min-height: 0; }
 
     .sidebar {
         order: 2;
@@ -625,8 +625,7 @@ button.active { background: #d99046; color: white; }
     .toolbar-home { font-size: 12px; padding: 6px 4px; }
       .workspace {
         padding: 26px 14px 14px;
-        aspect-ratio: 1 / 1;      /* ← 추가 */
-        flex: none;               /* ← 추가: flex:1 무력화 */
+      
     }
 }
 
