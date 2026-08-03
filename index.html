@@ -615,7 +615,14 @@ button.active { background: #d99046; color: white; }
     .division-buttons { display: flex; gap: 8px; }
     .division-buttons button { flex: 1; padding: 11px 4px; font-size: 13px; }
 
-    .toolbar { height: 52px; padding: 0 12px; }
+    .toolbar { height: 52px; padding: 0 8px; gap: 4px; overflow-x: auto; }
+    .toolbar button {
+        padding: 6px 8px;
+        font-size: 12px;
+        white-space: nowrap;   /* 글자가 두 줄로 깨지지 않게 */
+        flex-shrink: 0;        /* flex로 찌그러지지 않게 */
+    }
+    .toolbar-home { font-size: 12px; padding: 6px 4px; }
       .workspace {
         padding: 26px 14px 14px;
         aspect-ratio: 1 / 1;      /* ← 추가 */
@@ -678,6 +685,7 @@ button.active { background: #d99046; color: white; }
     background: transparent;
     color: #8a6a4c;
     font-size: 13px;
+    margin-left: auto;
 }
 
 /* .choice-grid 규칙에 추가 */
@@ -1108,6 +1116,17 @@ button.active { background: #d99046; color: white; }
 }
 
 @media (max-width: 767px) {
+    .selection-info {
+            position: fixed;
+            bottom: 10px;
+            right: 8px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+            font-size: 9px;
+            line-height: 1.6;
+    }
     .page { padding: 14px 18px 50px; }
     .page-title { font-size: 20px; margin: 24px 0 12px; }
     .page-desc { font-size: 13px; margin-bottom: 28px; }
