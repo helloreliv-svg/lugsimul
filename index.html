@@ -546,21 +546,23 @@ button.active { background: #d99046; color: white; }
 
 .rug-piece {
     position: absolute;
-    border: 1px dashed #544E3B;
+    border: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    /* color: #71431f; */
     color:#544E3B;
-    /* background: rgba(230, 190, 140, 0.3); */
     background: transparent;
     pointer-events: none;
     overflow: hidden;
     text-align: center;
     line-height: 1.4;
 }
+
+/* 조각 사이 분할선만 (바깥 테두리 없음) */
+.rug-piece.div-r { border-right: 1px dashed #544E3B; }
+.rug-piece.div-b { border-bottom: 1px dashed #544E3B; }
 
 .rug-piece .piece-size {     opacity: 1;
     font-weight: bold;}
@@ -1917,19 +1919,24 @@ function renderRugPieces(rug) {
     /* 견적과 동일한 로직으로 실제 분할 구성을 가져온다 */
     const layout = splitLayout(mode, rugW, rugH);
 
+    const nCols = layout.cols.length;
+    const nRows = layout.rows.length;
+
     let index = 0;
     let offsetY = 0;
 
-    layout.rows.forEach(rowH => {
+    layout.rows.forEach((rowH, ri) => {
 
         let offsetX = 0;
 
-        layout.cols.forEach(colW => {
+        layout.cols.forEach((colW, ci) => {
 
             index++;
 
             const div = document.createElement("div");
             div.className = "rug-piece";
+            if (ci < nCols - 1) div.classList.add("div-r");   // 마지막 열 아니면 오른쪽 선
+            if (ri < nRows - 1) div.classList.add("div-b");   // 마지막 행 아니면 아래 선
             div.innerHTML = index +
                 "<span class='piece-size'>" + colW + "×" + rowH + "</span>";
 
