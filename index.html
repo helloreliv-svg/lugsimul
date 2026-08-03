@@ -236,6 +236,13 @@ body {
 .section h3 {     margin: 0px 0px 24px;
     font-size: 16px; }
 
+.section-hint {
+    font-size: 13px;
+    color: #8a6a4c;
+    opacity: 0.85;
+    margin-bottom: 6px;
+}
+
 label {
     display: block;
     font-size: 13px;
@@ -463,29 +470,35 @@ button.active { background: #d99046; color: white; }
 }
 
 .object:active { cursor: grabbing; }
-.object.selected { outline: 3px dashed #bd8042; outline-offset: 1px; }
+.object.selected {
+     /* outline: 3px dashed #bd8042; outline-offset: 1px; */
+    outline: 2px dotted #544E3B;
+    outline-offset: 2px;
+     }
 
 .obj-name {
     font-size: 13px;
     font-weight: bold;
     pointer-events: none;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.7);   /* ← 추가 */
+    /* text-shadow: 0 1px 3px rgba(0,0,0,0.7);   */
 }
 
 .size-label {
     font-size: 11px;
-    opacity: 0.85;
+    opacity: 1;
     pointer-events: none;
     white-space: nowrap;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.7);   /* ← 추가 */
+    /* text-shadow: 0 1px 3px rgba(0,0,0,0.7);    */
 }
 .rug-size-label {
     position: absolute;
     top: -22px;
     left: 50%;
     transform: translateX(-50%);
-    color: #71431f;
-    text-shadow: none;   /* ← 추가 */
+    /* color: #71431f; */
+    font-weight: bold;
+    color:#544E3B;
+    text-shadow: none;  
 }
 
 .room.compact .obj-name,
@@ -496,33 +509,35 @@ button.active { background: #d99046; color: white; }
 .sofa {
     background: url("images/sofa.png") center/100% 100% no-repeat;
     border-radius: 18px;
-    color: white;
+    color: black;
     z-index: 2;
 }
 .bed {
     background: url("images/bed.png") center/100% 100% no-repeat;
     border-radius: 10px;
-    color: white;
+   color: black;
     z-index: 2;
 }
 .tv {
     background: url("images/tv.png") center/100% 100% no-repeat;
     border-radius: 5px;
-    color: white;
+     color: white;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);   
     z-index: 2;
 }
 
 .table {
     background: url("images/table.png") center/100% 100% no-repeat;
     border-radius: 50%;
-    color: white;
+     color: black;
     z-index: 2;
 }
 
 /* 러그 — 이미지 위에 반투명 색을 덮어 분할선이 잘 보이게 */
 .rug {
-    background: linear-gradient(rgba(204,157,102,0.15), rgba(204,157,102,0.15)),
-                url("images/lug.png") center/100% 100% no-repeat;
+    /* background: linear-gradient(rgba(204,157,102,0.15), rgba(204,157,102,0.15)),
+                url("images/lug.png") center/100% 100% no-repeat; */
+    background: url(images/lug.png) center / 100% 100% no-repeat;
     /* border: 3px solid #bd8042; */
     z-index: 1;
 }
@@ -531,13 +546,14 @@ button.active { background: #d99046; color: white; }
 
 .rug-piece {
     position: absolute;
-    border: 1px dashed rgba(100, 60, 20, 0.7);
+    border: 1px dashed #544E3B;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    color: #71431f;
+    /* color: #71431f; */
+    color:#544E3B;
     /* background: rgba(230, 190, 140, 0.3); */
     background: transparent;
     pointer-events: none;
@@ -546,7 +562,8 @@ button.active { background: #d99046; color: white; }
     line-height: 1.4;
 }
 
-.rug-piece .piece-size { font-size: 10px; opacity: 0.8; }
+.rug-piece .piece-size {     opacity: 1;
+    font-weight: bold;}
 
 /* ---------- 선택 정보 ---------- */
 .selection-info {
@@ -1215,24 +1232,22 @@ button.active { background: #d99046; color: white; }
 
            <div class="section">
             <h3>가구</h3>
-
-       <div class="furni-group open">
-           <div class="furni-tabs">
-                <button class="furni-tab active" data-type="sofa" onclick="selectFurniType('sofa')">소파</button>
-                <button class="furni-tab" data-type="bed" onclick="selectFurniType('bed')">침대</button>
-                <button class="furni-tab" data-type="table" onclick="selectFurniType('table')">테이블</button>
+            <div class="furni-tabs">
+                <button class="furni-tab" data-type="sofa" onclick="toggleFurniture('sofa')">소파</button>
+                <button class="furni-tab" data-type="tv" onclick="toggleFurniture('tv')">TV</button>
+                <button class="furni-tab" data-type="table" onclick="toggleFurniture('table')">테이블</button>
             </div>
-            <div class="furni-options" id="furniOptions"></div>
         </div>
 
         <!-- ===== 러그 추가 (기성 사이즈) ===== -->
         <div class="section">
-            <h3>러그</h3>
+            <h3>러그 사이즈 선택</h3>
             <div class="preset-grid" id="rugPresets"></div>
         </div>
 
         <!-- ===== 맞춤 제작 러그 ===== -->
         <div class="section">
+            <div class="section-hint">원하는 사이즈가 없다면?</div>
             <h3>맞춤 제작 러그</h3>
             <div class="custom-rug-box">
                 <div class="input-row">
@@ -1253,12 +1268,9 @@ button.active { background: #d99046; color: white; }
             </div>
         </div>
 
-   
-        </div>
-
        <!-- ===== 견적 계산 ===== -->
         <div class="section">
-            <h3>제작 견적</h3>
+            <h3>금액</h3>
             <div id="quoteBox" class="quote-box">
                 <div class="quote-empty">러그를 선택하면 견적이 계산됩니다.</div>
             </div>
@@ -1321,44 +1333,43 @@ const room = document.getElementById("room");
 
 const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블", bed: "침대" };
 
-/* 가구 종류별 선택지 */
-const FURNITURE_OPTIONS = {
-    sofa: [
-        { label: "2인용", w: 160, h: 90 },
-        { label: "3인용", w: 210, h: 90 },
-        { label: "4인용", w: 260, h: 95 }
-    ],
-    bed: [
-        { label: "싱글", w: 100, h: 200 },
-        { label: "퀸",   w: 150, h: 200 }
-    ],
-    table: [
-        { label: "소형", w: 100, h: 60 },
-        { label: "중형", w: 120, h: 70 },
-        { label: "대형", w: 150, h: 90 }
-    ]
+/* 가구 — 각 종류별 고정 크기 (하위 옵션 없이 탭 클릭으로 바로 배치) */
+const FURNITURE = {
+    sofa:  { name: "3인용",  w: 210, h: 90 },
+    tv:    { name: "TV",     w: 120, h: 40 },
+    table: { name: "테이블", w: 100, h: 100 }
 };
 
-/* 가구 종류(소파/침대) 탭을 누르면 하위 크기 옵션을 카드로 그린다 */
-function selectFurniType(type) {
+/* 가구 탭 클릭 — 가구는 소파·TV·테이블 모두 캔버스에 놓을 수 있다(전부 보임).
+   단, 선택(active)은 가구끼리 하나만 — 다른 가구를 누르면 이전 선택이 풀린다.
+   이미 선택된 가구를 다시 누르면 치워진다(토글). 러그 선택에는 영향 없음. */
+function toggleFurniture(type) {
 
-    document.querySelectorAll(".furni-tab")
-        .forEach(b => b.classList.toggle("active", b.dataset.type === type));
+    const el = room.querySelector("." + type);
 
-    const box = document.getElementById("furniOptions");
-    box.innerHTML = "";
+    if (el && isSelected(el)) {
+        /* 선택된 가구를 다시 누르면 캔버스에서 제거 */
+        selectedObjects.splice(selectedObjects.indexOf(el), 1);
+        el.remove();
+    } else {
+        /* 없으면 새로 배치, 있으면 그대로 두고 선택만 이 가구로 옮긴다 */
+        const f = FURNITURE[type];
+        const target = el || addFurniture(type, f.w, f.h, f.name);
 
-    FURNITURE_OPTIONS[type].forEach(opt => {
+        /* 가구는 하나만 선택 — 다른 가구는 선택 해제(러그 선택은 유지) */
+        selectedObjects = selectedObjects.filter(o => o.dataset.type === "rug");
+        selectedObjects.push(target);
+        selectedObject = target;
+    }
 
-        const card = document.createElement("button");
-        card.className = "furni-card";
-        card.innerHTML = '<span class="fc-name">' + opt.label + '</span>' +
-                         '<span class="fc-size">' + opt.w + '×' + opt.h + '</span>';
-        card.onclick = function () {
-            addFurniture(type, opt.w, opt.h, opt.label);
-        };
+    refreshSelectionUI();
+}
 
-        box.appendChild(card);
+/* 탭 활성 표시 = 그 가구가 '선택'된 상태일 때 (배치 여부와 무관) */
+function updateFurniTabs() {
+    document.querySelectorAll(".furni-tab").forEach(b => {
+        const el = room.querySelector("." + b.dataset.type);
+        b.classList.toggle("active", !!el && isSelected(el));
     });
 }
 
@@ -1503,9 +1514,7 @@ function addRug(presetIndex) {
     el.querySelector(".size-label").classList.add("rug-size-label");
 
     renderObject(el);
-    selectObject(el);
-
-    updateQuote();
+    addToSelection(el);
 }
 
 /* ---------- 맞춤 제작 러그 ---------- */
@@ -1538,8 +1547,7 @@ function addCustomRug() {
     el.dataset.y = pos.y;
 
     renderObject(el);
-    selectObject(el);
-    updateQuote();
+    addToSelection(el);
 
     /* 제작 방식 안내 */
     if (w <= ROLL_WIDTH && h <= MAX_LENGTH) {
@@ -1565,51 +1573,27 @@ function addCustomRug() {
 /* ---------- 가구 추가 ---------- */
 
 
-// 변경 후
 function addFurniture(type, w, h, label) {
 
     const name = label || TYPE_NAMES[type];
 
-    /* 같은 종류가 이미 있으면 그 자리에서 크기만 교체 */
-    const existing = room.querySelector("." + type);
+    /* 위치: 소파는 하단 중앙 / TV는 상단 중앙 / 테이블은 중앙 */
+    let x = (CANVAS_W - w) / 2;
+    let y = (type === "sofa") ? (CANVAS_H - h - 20)
+          : (type === "tv")   ? 20
+          : (CANVAS_H - h) / 2;
 
-   if (existing) {
-
-        const oldW = Number(existing.dataset.w);
-        const oldH = Number(existing.dataset.h);
-
-        /* 중심을 유지한 채 크기 변경 */
-        existing.dataset.x = Number(existing.dataset.x) - (w - oldW) / 2;
-        existing.dataset.y = Number(existing.dataset.y) - (h - oldH) / 2;
-
-        existing.dataset.w = w;
-        existing.dataset.h = h;
-
-        const nameEl = existing.querySelector(".obj-name");
-        if (nameEl) nameEl.innerText = name;
-
-        const pos = clampPosition(
-            existing,
-            Number(existing.dataset.x),
-            Number(existing.dataset.y)
-        );
-        existing.dataset.x = pos.x;
-        existing.dataset.y = pos.y;
-
-        renderObject(existing);
-        selectObject(existing);
-        return;
-    }
-
-    const startX = { sofa: 40, tv: 200, table: 380, bed: 300 }[type];
-    const startY = { sofa: 300, tv: 30, table: 180, bed: 50 }[type];
-
-    let x = Math.max(0, Math.min(startX, CANVAS_W - w));
-    let y = Math.max(0, Math.min(startY, CANVAS_H - h));
+    x = Math.max(0, x);
+    y = Math.max(0, y);
 
     const el = createObject(type, name, w, h, x, y);
 
-    selectObject(el);
+    const pos = clampPosition(el, x, y);
+    el.dataset.x = pos.x;
+    el.dataset.y = pos.y;
+    renderObject(el);
+
+    return el;
 }
 
 
@@ -1747,12 +1731,24 @@ function selectObject(el) {
     refreshSelectionUI();
 }
 
-/* 클릭 토글 — 이미 선택돼 있으면 해제, 아니면 선택에 추가 */
+/* 선택에 추가 — 러그 사이즈 버튼을 누를 때마다 견적에 누적 반영 */
+function addToSelection(el) {
+    if (selectedObjects.indexOf(el) === -1) selectedObjects.push(el);
+    selectedObject = el;
+    refreshSelectionUI();
+}
+
+/* 클릭 토글 — 이미 선택돼 있으면 해제, 아니면 선택에 추가.
+   러그는 여러 개 동시 선택되지만, 가구는 하나만 선택된다. */
 function toggleSelection(el) {
 
     const i = selectedObjects.indexOf(el);
 
     if (i === -1) {
+        /* 가구를 새로 선택하면 다른 가구는 선택 해제 (러그 선택은 유지) */
+        if (el.dataset.type !== "rug") {
+            selectedObjects = selectedObjects.filter(o => o.dataset.type === "rug");
+        }
         selectedObjects.push(el);
         selectedObject = el;
     } else {
@@ -1775,6 +1771,7 @@ function refreshSelectionUI() {
     document.querySelectorAll(".object")
         .forEach(o => o.classList.toggle("selected", isSelected(o)));
 
+    updateFurniTabs();
     updateSelectionInfo();
     updateQuote();
 }
@@ -1933,13 +1930,14 @@ function deleteSelected() {
 
     selectedObjects.forEach(o => o.remove());
     clearSelection();
+    updateFurniTabs();
 }
 
 function clearAll() {
 
     room.querySelectorAll(".object").forEach(o => o.remove());
     clearSelection();
-    updateQuote();
+    updateFurniTabs();
 }
 
 /* ---------- 줌 ---------- */
@@ -2058,7 +2056,7 @@ function presetQuoteSection(list) {
 
     let html = '<div class="q-section"><div class="q-section-title">기성 러그</div>';
 
-    html += '<div class="q-sub-head">금액</div>';
+    //html += '<div class="q-sub-head">금액</div>';
 
     Object.keys(groups).forEach(key => {
         const g = groups[key];
@@ -2485,10 +2483,8 @@ function calcQuote() {
 
 buildPyeongButtons();
 buildRugPresets();
-selectFurniType("sofa");
 fitToWorkspace();
 refreshView();
-addRug(3);
 
 showScreen("home");
 
