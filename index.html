@@ -426,7 +426,7 @@ button.active { background: #d99046; color: white; }
 }
 
 .toolbar-home {
-    margin-left: auto !important;      /* 남는 공간을 왼쪽에 몰아 항상 오른쪽 끝으로 */
+    margin-right: auto !important;      /* 남는 공간을 왼쪽에 몰아 항상 오른쪽 끝으로 */
     background: transparent;
     color: #8a6a4c;
     font-size: 13px;
@@ -684,7 +684,7 @@ button.active { background: #d99046; color: white; }
     background: transparent;
     color: #8a6a4c;
     font-size: 12px;
-    margin-left: auto;
+    /* margin-left: auto; */
 }
 
 /* .choice-grid 규칙에 추가 */
@@ -1303,12 +1303,13 @@ button.active { background: #d99046; color: white; }
     <main class="main">
 
         <div class="toolbar">
+              <button class="toolbar-home" onclick="showScreen('home')">← 처음으로</button>
             <button onclick="zoomOut()">−</button>
             <span id="zoomText">100%</span>
             <button onclick="zoomIn()">+</button>
             <button onclick="deleteSelected()">선택 삭제</button>
             <button class="secondary" onclick="clearAll()">전체 지우기</button>
-            <button class="toolbar-home" onclick="showScreen('home')">← 처음으로</button>
+          
         </div>
 
         <div class="workspace">
@@ -1332,14 +1333,14 @@ button.active { background: #d99046; color: white; }
    ========================================================== */
 
 /* 배치 캔버스 = 거실 크기 (cm). 평형 선택에 따라 바뀐다. */
-let CANVAS_W = 350;       // 기본: 24-25평 거실 (3.5m)
-let CANVAS_H = 470;       // 기본: 24-25평 거실 (4.7m)
+let CANVAS_W = 470;       // 기본: 24-25평 거실 (가로형)
+let CANVAS_H = 350;
 
 /* 평형 프리셋 — 전용면적 → 거실 대략 크기 */
 const PYEONG_PRESETS = [
-    { label: "24-25평", area: "59㎡",  w: 350, h: 470 },
-    { label: "33-34평", area: "84㎡",  w: 400, h: 550 },
-    { label: "43-46평", area: "114㎡", w: 450, h: 600 }
+    { label: "24-25평", area: "59㎡",  w: 470, h: 350 },
+    { label: "33-34평", area: "84㎡",  w: 550, h: 400 },
+    { label: "43-46평", area: "114㎡", w: 600, h: 450 }
 ];
 
 let baseScale = 1;        // fit-to-container로 자동 계산되는 기준 배율
