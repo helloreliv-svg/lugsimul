@@ -476,6 +476,29 @@ button.active { background: #d99046; color: white; }
     outline-offset: 2px;
      }
 
+/* 오른쪽 아래 회전 핸들 — 선택된 객체에만 표시 */
+.rotate-handle {
+    position: absolute;
+    right: -13px;
+    bottom: -13px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    cursor: pointer;
+    pointer-events: auto;
+    touch-action: none;
+    z-index: 6;
+}
+
+.rotate-handle svg { width: 15px; height: 15px; display: block; }
+.object.selected .rotate-handle { display: flex; }
+
 .obj-name {
     font-size: 13px;
     font-weight: bold;
@@ -589,6 +612,15 @@ button.active { background: #d99046; color: white; }
     .app { flex-direction: column; height: 100dvh; }
 
     .main { order: 1; min-height: 0; }
+
+    /* 모바일에서는 회전 핸들을 살짝 작게 */
+    .rotate-handle {
+        width: 21px;
+        height: 21px;
+        right: -10px;
+        bottom: -10px;
+    }
+    .rotate-handle svg { width: 12px; height: 12px; }
 
     .sidebar {
         order: 2;
@@ -1504,11 +1536,39 @@ function createObject(type, name, w, h, x, y) {
     sizeEl.className = "size-label";
     el.appendChild(sizeEl);
 
+    /* 오른쪽 아래 회전 핸들 — 선택됐을 때만 보이고, 누르면 90° 회전 */
+    const handle = document.createElement("div");
+    handle.className = "rotate-handle";
+    handle.title = "90° 회전";
+    handle.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<polyline points="23 4 23 10 17 10"/>' +
+        '<polyline points="1 20 1 14 7 14"/>' +
+        '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>' +
+        '</svg>';
+    handle.addEventListener("pointerdown", function (e) {
+        e.stopPropagation();     /* 드래그·선택해제로 번지지 않게 */
+        e.preventDefault();
+        rotateOne(el, 90);
+    });
+    el.appendChild(handle);
+
     room.appendChild(el);
     makeDraggable(el);
     renderObject(el);
 
     return el;
+}
+
+/* 특정 객체 하나만 90° 회전 (선택 상태는 그대로 유지) */
+function rotateOne(el, deg) {
+    el.dataset.rot = (Number(el.dataset.rot) + deg + 360) % 360;
+    const pos = clampPosition(el, Number(el.dataset.x), Number(el.dataset.y));
+    el.dataset.x = pos.x;
+    el.dataset.y = pos.y;
+    renderObject(el);
+    updateSelectionInfo();
 }
 
 
