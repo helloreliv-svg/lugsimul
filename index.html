@@ -2489,8 +2489,8 @@ function currentSource() {
 function clickParams() {
     const src = currentSource();
     return src === "quote"
-        ? { source: src, width: quoteW, height: quoteH }
-        : { source: src };
+        ? { click_from: src, width: quoteW, height: quoteH }
+        : { click_from: src };
 }
 
 function openKakao() {
@@ -2503,7 +2503,7 @@ function openOrder() {
 }
 
 function openPresetOrder() {
-    track("preset_order_click", { source: "planner" });
+    track("preset_order_click", { click_from: "planner" });
     if (!PRESET_ORDER_URL) {
         alert("기성러그 제품 페이지 주소가 아직 연결되지 않았습니다.");
         return;
