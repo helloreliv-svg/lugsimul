@@ -1177,6 +1177,20 @@ button.active { background: #d99046; color: white; }
 
 
 </style>
+
+<!-- GA4: 릴리브 자사몰 속성과 동일한 측정 ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DTMBMEWKRG"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-DTMBMEWKRG');
+
+    /* 이벤트 전송 도우미 — GA 코드가 막혀 있어도(광고 차단 등) 계산기는 정상 동작 */
+    function track(name, params) {
+        try { gtag('event', name, params || {}); } catch (e) {}
+    }
+</script>
 </head>
 
 <body>
@@ -1392,7 +1406,7 @@ const TYPE_NAMES = { rug: "러그", sofa: "소파", tv: "TV", table: "테이블"
 
 /* 가구 — 각 종류별 고정 크기 (하위 옵션 없이 탭 클릭으로 바로 배치) */
 const FURNITURE = {
-    sofa:  { name: "쇼파(3인)",  w: 210, h: 90 },
+    sofa:  { name: "소파(3인)",  w: 210, h: 90 },
     tv:    { name: "TV",     w: 120, h: 40 },
     table: { name: "테이블", w: 100, h: 100 }
 };
@@ -2281,6 +2295,7 @@ function showScreen(name) {
         document.getElementById(id).classList.remove("active"));
 
     document.getElementById(ids[name]).classList.add("active");
+    track("calc_screen", { screen: name });
 
     /* 배치 화면은 보인 뒤에 크기를 다시 재야 배율이 맞는다 */
     if (name === "planner") {
@@ -2440,6 +2455,7 @@ function buildOptionGuideInner(modeKey, W, H) {
 
 /* 카드를 누르면 선택 상태와 주문 안내가 함께 바뀐다 */
 function selectQuoteMode(idx) {
+    track("quote_mode_select", { mode: QUOTE_MODES[idx].key });
 
     quoteModeIdx = idx;
 
@@ -2463,10 +2479,31 @@ const ORDER_URL = "https://reliv.co.kr/shop_view/?idx=121";
 /* TODO: 기성러그(3세대 제품) 랜딩 주소를 받으면 채운다 */
 const PRESET_ORDER_URL = "https://reliv.co.kr/shop_view/?idx=119";
 
-function openKakao() { window.open(KAKAO_CHAT_URL, "_blank", "noopener"); }
-function openOrder() { window.open(ORDER_URL, "_blank", "noopener"); }
+/* 버튼을 누른 화면 — 견적 확인(quote) / 배치 시뮬레이터(planner) */
+function currentSource() {
+    return document.getElementById("screenPlanner").classList.contains("active")
+        ? "planner" : "quote";
+}
+
+/* 견적 화면에서만 입력한 사이즈를 함께 보낸다 (배치 화면은 입력값이 없다) */
+function clickParams() {
+    const src = currentSource();
+    return src === "quote"
+        ? { source: src, width: quoteW, height: quoteH }
+        : { source: src };
+}
+
+function openKakao() {
+    track("kakao_click", clickParams());
+    window.open(KAKAO_CHAT_URL, "_blank", "noopener");
+}
+function openOrder() {
+    track("order_click", clickParams());
+    window.open(ORDER_URL, "_blank", "noopener");
+}
 
 function openPresetOrder() {
+    track("preset_order_click", { source: "planner" });
     if (!PRESET_ORDER_URL) {
         alert("기성러그 제품 페이지 주소가 아직 연결되지 않았습니다.");
         return;
@@ -2516,6 +2553,7 @@ function calcQuote() {
                 buildOptionGuideInner("optimal", W, H) + '</div>';
 
         box.innerHTML = html;
+        track("quote_calc", { width: W, height: H, pieces: 1, value: price, currency: "KRW" });
         return;
     }
 
@@ -2560,6 +2598,15 @@ function calcQuote() {
             buildOptionGuideInner(QUOTE_MODES[quoteModeIdx].key, W, H) + '</div>';
 
     box.innerHTML = html;
+
+    /* 기본 선택(추천 방식) 기준의 장수·금액을 보낸다 */
+    const rec = splitLayout(QUOTE_MODES[quoteModeIdx].key, W, H);
+    track("quote_calc", {
+        width: W, height: H,
+        pieces: rec.cols.length * rec.rows.length,
+        value: summarizeMode(QUOTE_MODES[quoteModeIdx].key, W, H).subtotal,
+        currency: "KRW"
+    });
 }
 
 /* 견적 입력칸에서 Enter로 바로 계산 */
