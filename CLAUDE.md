@@ -25,7 +25,8 @@
 
 ## 견적 계산 규칙 — 함부로 바꾸지 말 것
 - 원단 **폭 200cm 고정**(`ROLL_WIDTH`), 1장 최대 **200×400cm**(`MAX_LENGTH`). 초과하면 분할.
-- 가격은 **길이를 10cm 단위로 올림**(`optionTier`, `LENGTH_STEP`) 후 `panelPrice`로 계산. 단가 `UNIT_PRICE`=45,500원/㎡ (폭200 기준 10cm당 9,100원).
+- 주문 옵션은 **"길이 N cm 이하"(50~400cm, 10cm 단위)**. 안내 박스는 `사이즈 160×250 / 길이 250cm 이하 / X 4` 형태로 보여주고 복사된다(복사 문구는 `사이즈 160×250 / 길이 250cm 이하 선택 / 수량 4 선택`). 50cm보다 짧은 조각도 "50cm 이하"(`MIN_OPTION_LENGTH`)로 청구한다.
+- 가격은 **길이를 10cm 단위로 올림(최소 50cm)**(`optionTier`, `LENGTH_STEP`, `MIN_OPTION_LENGTH`) 후 `panelPrice`로 계산. 단가 `UNIT_PRICE`=45,500원/㎡ (폭200 기준 10cm당 9,100원).
 - 분할 방식 `splitLayout(mode, W, H)`: `equal`(균등) / `optimal` / `max`. 합계는 올림 때문에 방식마다 다를 수 있다.
 - 견적 화면은 3가지 방식을 비교하고, 배치 화면은 **등분(`equal`) 고정**이다.
 - 기성 러그 가격은 `PRESET_PRICES`, 크기는 `RUG_PRESETS`. 맞춤 러그는 위 규칙을 쓴다.
@@ -43,7 +44,7 @@
 
 ## GA4 추적
 - `<head>`에 GA4 태그(릴리브 자사몰과 같은 속성)와 `track(name, params)` 도우미가 있다. 이벤트 전송은 `track(...)` 호출로 한다.
-- 현재 이벤트: `calc_screen`(screen), `quote_calc`(width,height,pieces,value,currency), `quote_mode_select`(mode), `order_click`·`kakao_click`(click_from, width,height), `preset_order_click`(click_from).
+- 현재 이벤트: `calc_screen`(screen), `quote_calc`(width,height,pieces,value,currency), `quote_mode_select`(mode), `order_click`·`kakao_click`·`option_copy`(click_from, width,height), `preset_order_click`(click_from).
 - **GA4에 이미 등록된 이벤트 범위 맞춤 측정기준과 매개변수 이름이 겹치면 안 된다.** 특히 `source`, `medium`, `campaign`, `link_url`, `page_location`, `query`, `content`, `term`은 이미 다른 용도로 등록돼 있어 쓰지 않는다. (클릭 화면 구분은 `click_from`을 쓴다.)
 - 새 매개변수를 추가하면 GA4 관리 → 데이터 표시 → 맞춤 정의에서 등록해야 탐색에서 쓸 수 있다고 사용자에게 안내한다.
 - **주의**: `localhost` 등 로컬에서 열어도 이벤트가 실제 GA4로 전송된다. 로컬 테스트 시 실제 데이터에 섞일 수 있다. (개선 아이디어: 실제 배포 주소일 때만 전송)
